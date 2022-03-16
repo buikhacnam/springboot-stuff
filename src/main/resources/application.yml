@@ -1,0 +1,19 @@
+server:
+  port: '8888'
+  error:
+    include-message: always
+spring:
+  datasource:
+    url: 'jdbc:mysql://localhost:3306/schedule'
+    username: root
+    password: mrbui123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+welcome:
+  message: Welcome to the server!
