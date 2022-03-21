@@ -21,6 +21,8 @@ public class ScheduleDTO {
     private Long id;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
+    private String createUser;
+    private String updateUser;
     private String name;
     private String description;
     private String location;
