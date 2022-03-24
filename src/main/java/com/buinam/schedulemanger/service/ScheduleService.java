@@ -10,7 +10,7 @@ public interface ScheduleService {
     ScheduleDTO createOrUpdateSchedule(ScheduleDTO scheduleDTO);
 
     LazyLoadDTO searchSchedule(String pageSize, String pageNumber, String name, String fromDate, String toDate,
-            String description, String location);
+            String description, String location, String textSearch, String orderBy, String orderType);
 
     List<Schedule> searchTextSchedule(String pageSize, String pageNumber, String name, String fromDate, String toDate,
             String description, String location, String searchText);

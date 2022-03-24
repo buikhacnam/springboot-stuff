@@ -1,6 +1,7 @@
 package com.buinam.schedulemanger.service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.buinam.schedulemanger.model.Schedule;
 import com.buinam.schedulemanger.repository.MapScheduleRepository;
 import com.buinam.schedulemanger.repository.ScheduleRepository;
 import com.buinam.schedulemanger.utils.CommonUtils;
+import com.buinam.schedulemanger.utils.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -45,37 +47,76 @@ public class ScheduleServiceImpl implements ScheduleService {
     private EntityManager em;
 
     @Override
-    public LazyLoadDTO searchSchedule(String pageSize, String pageNumber, String name, String fromDate, String toDate, String description, String location) {
+    public LazyLoadDTO searchSchedule(String pageSize, String pageNumber, String name, String strFromDate, String strToDate, String description, String location, String textSearch, String orderBy, String orderType) {
 
-        LazyLoadDTO lazyLoadDTO = executeSearchScheduleByCondition(pageSize, pageNumber, name, fromDate, toDate, description, location);
-        
+        LocalDateTime fromDate = null;
+        LocalDateTime toDate = null;
+        String strFormat = "yyyy-MM-dd"; 
+
+        System.out.println("strFromDate: " + strFromDate); // 2022-03-07
+
+        if (!Strings.isNullOrEmpty(strFromDate)) {
+            fromDate = DateUtil.convertStringToLocalDateTime(strFromDate, strFormat);
+        }
+        if (!Strings.isNullOrEmpty(strToDate)) {
+            toDate = DateUtil.convertStringToLocalDateTime(strToDate, strFormat);
+        }
+        if (fromDate != null && (toDate == null || fromDate.isEqual(toDate))) {
+            toDate = fromDate.plusDays(1L);
+        }
+
+        System.out.println("fromDate: " + fromDate); // 2022-03-07T00:00
+
+        // first get the count of result the query will get
+        LazyLoadDTO lazyLoadDTO = executeSearchScheduleByCondition(pageSize, pageNumber, name, fromDate, toDate, description, location, textSearch, orderBy, orderType, true);
+
+
+        // if the result is not empty (count > 0 or whatever), then use the count from the last query and  execute the query to get the schedule list
+        if(lazyLoadDTO != null) {
+
+            System.out.println("MAKE IT HERE!!!!!!!!!!!!!!!!!");
+           BigDecimal count = lazyLoadDTO.getCount();
+            
+            // if count is greater than 0
+            if(count.compareTo(BigDecimal.ZERO) > 0) {
+                // get the schedule list
+                lazyLoadDTO = executeSearchScheduleByCondition(pageSize, pageNumber, name, fromDate, toDate, description, location, textSearch, orderBy, orderType, false);
+                lazyLoadDTO.setCount(count);
+            }
+        }
+
         
         return lazyLoadDTO;
 
     }
 
-    private LazyLoadDTO executeSearchScheduleByCondition(String pageSize, String pageNumber, String name, String fromDate, String toDate, String description, String location) {
+    private LazyLoadDTO executeSearchScheduleByCondition(String pageSize, String pageNumber, String name, LocalDateTime fromDate, LocalDateTime toDate, String description, String location, String textSearch, String orderBy, String orderType, boolean isCount) {
         
         LazyLoadDTO lazyLoadDTO = new LazyLoadDTO();
         List<Object> listParam = new ArrayList<>();
         StringBuilder strQuery = new StringBuilder();
 
-        strQuery.append("SELECT * FROM schedule s WHERE 1=1 ");
+
+        if(isCount) {
+            strQuery.append("SELECT COUNT(*) FROM schedule s WHERE 1=1 ");
+        } else {
+            strQuery.append("SELECT * FROM schedule s WHERE 1=1 ");
+        } 
 
         if(!Strings.isNullOrEmpty(name)) {
             strQuery.append(" AND name LIKE ? ");
             listParam.add("%" + name + "%");
         }
 
-        // if(!Strings.isNullOrEmpty(fromDate)) {
-        //     strQuery.append(" AND start_date >= ? ");
-        //     listParam.add(fromDate);
-        // }
+        if(fromDate != null) {
+            strQuery.append(" AND create_date_time >= ? ");
+            listParam.add(fromDate);
+        }
 
-        // if(!Strings.isNullOrEmpty(toDate)) {
-        //     strQuery.append(" AND end_date <= ? ");
-        //     listParam.add(toDate);
-        // }
+        if(toDate != null) {
+            strQuery.append(" AND create_date_time <= ? ");
+            listParam.add(toDate);
+        }
 
         if(!Strings.isNullOrEmpty(description)) {
             strQuery.append(" AND description LIKE ? ");
@@ -87,39 +128,56 @@ public class ScheduleServiceImpl implements ScheduleService {
             listParam.add("%" + location + "%");
         }
 
-        strQuery.append(" ORDER BY s.update_date_time DESC ");
-        System.out.println("222222222222222222222222222222222222");
+        if (!Strings.isNullOrEmpty(textSearch)) {
+            strQuery.append(" AND ( s.name LIKE ? OR s.description LIKE ? OR s.location LIKE ? ) ");
+            listParam.add("%" + textSearch.trim().toLowerCase() + "%");
+            listParam.add("%" + textSearch.trim().toLowerCase() + "%");
+            listParam.add("%" + textSearch.trim().toLowerCase() + "%");
+        }
+        if (Strings.isNullOrEmpty(orderBy)) {
+            // if there is no orderBy, then order by start_date
+            strQuery.append(" ORDER BY s.update_date_time DESC ");
+        } else {
+            if (!Strings.isNullOrEmpty(orderType)) {
+                // there is orderType, then order by orderBy and orderType
+                strQuery.append(" ORDER BY ".concat("s.".concat(orderBy)).concat(" ").concat(orderType));
+            } else {
+                // there is no orderType, then order by orderBy only
+                strQuery.append(" ORDER BY ".concat("s.".concat(orderBy)));
+            }
+        }
         
         Query query = null;
 
-        query = em.createNativeQuery(strQuery.toString(), Schedule.class);
+        if (isCount) {
+            query = em.createNativeQuery(strQuery.toString());
+        } else {
+            query = em.createNativeQuery(strQuery.toString(), Schedule.class);
+        }
 
         for(int i = 0; i < listParam.size(); i++) {
             query.setParameter(i + 1, listParam.get(i));
         }
 
-        if(!Strings.isNullOrEmpty(pageSize) && !Strings.isNullOrEmpty(pageNumber)) {
-            int page = Integer.parseInt(pageNumber);
-            int size = Integer.parseInt(pageSize);
-            Pageable pageable = PageRequest.of(page, size);
 
-            if(pageable.getPageNumber() - 1 < 0) {
-                query.setFirstResult(0);
-            } else {
-                query.setFirstResult((pageable.getPageNumber() - 1) * pageable.getPageSize());
+        if (isCount) {
+            BigDecimal count = new BigDecimal((BigInteger) query.getSingleResult());
+            lazyLoadDTO.setCount(count);
+        } else {
+            if(!Strings.isNullOrEmpty(pageSize) && !Strings.isNullOrEmpty(pageNumber)) {
+                int page = Integer.parseInt(pageNumber);
+                int size = Integer.parseInt(pageSize);
+                Pageable pageable = PageRequest.of(page, size);
+    
+                if(pageable.getPageNumber() - 1 < 0) {
+                    query.setFirstResult(0);
+                } else {
+                    query.setFirstResult((pageable.getPageNumber() - 1) * pageable.getPageSize());
+                }
+                query.setMaxResults(pageable.getPageSize());
+                lazyLoadDTO.setListObject(query.getResultList());
             }
-            query.setMaxResults(pageable.getPageSize());
         }
-        // Integer count = query.getResultList().size();
-        // BigDecimal count = (BigDecimal) query.getSingleResult();
-        // System.out.println("countttttttttttttttttt: " + count);
-        // lazyLoadDTO.setCount(count);
-
-        lazyLoadDTO.setListObject(query.getResultList());
-
-        System.out.println("111111111111111111111111111111111");
-
-        System.out.println("lazyLoadDTO: " + query.getResultList());
 
         return lazyLoadDTO;
     }

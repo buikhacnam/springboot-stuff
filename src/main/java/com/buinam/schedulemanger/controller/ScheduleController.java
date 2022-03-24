@@ -29,20 +29,39 @@ public class ScheduleController {
 
 
     @GetMapping("/search")
-    public LazyLoadDTO searchSchedule(
+    public ResponseEntity<CommonResponse> searchSchedule(
         @RequestParam(required = false) String pageSize,
         @RequestParam(required = false) String pageNumber,
         @RequestParam(required = false) String name,
         @RequestParam(required = false) String fromDate,
         @RequestParam(required = false) String toDate,
         @RequestParam(required = false) String description,
-        @RequestParam(required = false) String location
+        @RequestParam(required = false) String location,
+        @RequestParam(required = false) String textSearch,
+        @RequestParam(required = false) String orderBy,
+        @RequestParam(required = false) String orderType
     ) {
         try {
-            LazyLoadDTO schedules = scheduleService.searchSchedule(pageSize, pageNumber ,name, fromDate, toDate, description, location);
-            return schedules;
+            LazyLoadDTO schedules = scheduleService.searchSchedule(pageSize, pageNumber, name, fromDate, toDate, description, location, textSearch, orderBy, orderType);
+            return new ResponseEntity<>(
+                new CommonResponse(
+                    "Create schedule successfully",
+                    true,
+                    schedules,
+                    HttpStatus.OK.value()
+                ), 
+                HttpStatus.OK)
+            ;
         } catch(Exception e) {
-            return null;
+            return new ResponseEntity<>(
+                new CommonResponse(
+                    e.getMessage(), 
+                    true, 
+                    null, 
+                    HttpStatus.BAD_REQUEST.value()
+                ),
+                HttpStatus.BAD_REQUEST
+            );
         }
     }
 
