@@ -1,7 +1,9 @@
 package com.buinam.schedulemanger.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import com.buinam.schedulemanger.dto.LazyLoadDTO;
 import com.buinam.schedulemanger.dto.ScheduleDTO;
 import com.buinam.schedulemanger.model.Schedule;
 import com.buinam.schedulemanger.service.ScheduleService;
@@ -11,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -21,6 +26,47 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
+
+
+    @GetMapping("/search")
+    public LazyLoadDTO searchSchedule(
+        @RequestParam(required = false) String pageSize,
+        @RequestParam(required = false) String pageNumber,
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String fromDate,
+        @RequestParam(required = false) String toDate,
+        @RequestParam(required = false) String description,
+        @RequestParam(required = false) String location
+    ) {
+        try {
+            LazyLoadDTO schedules = scheduleService.searchSchedule(pageSize, pageNumber ,name, fromDate, toDate, description, location);
+            return schedules;
+        } catch(Exception e) {
+            return null;
+        }
+    }
+
+    @GetMapping("/search/text")
+    public List<Schedule> searchTextSchedule(
+        @RequestParam(required = false) String pageSize,
+        @RequestParam(required = false) String pageNumber,
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String fromDate,
+        @RequestParam(required = false) String toDate,
+        @RequestParam(required = false) String description,
+        @RequestParam(required = false) String location,
+        @RequestParam(required = false) String searchText
+    ) {
+        try {
+            System.out.println("seeeeeeeeeeeeeeee" + searchText);
+            List<Schedule> schedules = scheduleService.searchTextSchedule(pageSize, pageNumber ,name, fromDate, toDate, description, location, searchText);
+            return schedules;
+        } catch(Exception e) {
+            System.out.print(e.getMessage() );
+            return null;
+        }
+    }
+
 
     @PostMapping("/save")
     public ResponseEntity<CommonResponse> createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
