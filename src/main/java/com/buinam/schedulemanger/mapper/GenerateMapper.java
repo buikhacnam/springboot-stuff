@@ -1,6 +1,7 @@
 package com.buinam.schedulemanger.mapper;
 
 import com.buinam.schedulemanger.dto.ScheduleDTO;
+import com.buinam.schedulemanger.dto.ScheduleDetailDTO;
 import com.buinam.schedulemanger.model.Schedule;
 
 import org.mapstruct.Mapper;
@@ -9,4 +10,5 @@ import org.mapstruct.Mapper;
 public interface GenerateMapper {
     Schedule mapScheduleFromDTO (ScheduleDTO scheduleDTO);
     ScheduleDTO mapScheduleFromEntity (Schedule schedule);
+    ScheduleDetailDTO mapScheduleDetailFromEntity (Schedule schedule);
 }

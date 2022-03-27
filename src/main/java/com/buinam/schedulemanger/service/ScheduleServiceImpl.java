@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,10 +14,13 @@ import javax.transaction.Transactional;
 
 import com.buinam.schedulemanger.dto.LazyLoadDTO;
 import com.buinam.schedulemanger.dto.ScheduleDTO;
+import com.buinam.schedulemanger.dto.ScheduleDetailDTO;
 import com.buinam.schedulemanger.mapper.GenerateMapper;
 import com.buinam.schedulemanger.model.MapSchedule;
 import com.buinam.schedulemanger.model.Schedule;
+import com.buinam.schedulemanger.model.ScheduleCategories;
 import com.buinam.schedulemanger.repository.MapScheduleRepository;
+import com.buinam.schedulemanger.repository.ScheduleCategoriesRepository;
 import com.buinam.schedulemanger.repository.ScheduleRepository;
 import com.buinam.schedulemanger.utils.CommonUtils;
 import com.buinam.schedulemanger.utils.DateUtil;
@@ -25,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.google.common.base.Strings;
@@ -36,6 +41,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Autowired
     private ScheduleRepository scheduleRepository;
+
+    @Autowired
+    private ScheduleCategoriesRepository scheduleCategoriesRepository;
 
     @Autowired
     private MapScheduleRepository mapScheduleRepository;
@@ -211,7 +219,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             List<MapSchedule> mapScheduleList = new ArrayList<MapSchedule>();
             scheduleDTO.getCategories().forEach(categoryId -> {
                 Long scheduleId = scheduleSending.getId();
-                mapScheduleList.add(new MapSchedule(null, categoryId, scheduleId));
+                mapScheduleList.add(new MapSchedule(null, scheduleId, categoryId));
             });
 
             // loop through the list of map_schedule and add userName to each map_schedule
@@ -243,5 +251,43 @@ public class ScheduleServiceImpl implements ScheduleService {
         System.out.println("count " + count);
         return result;
         // return scheduleRepository.searchTextSchedule(searchText);
+    }
+
+    @Override
+    public ScheduleDetailDTO getScheduleDetail(Long id) throws Exception{
+        try {
+            Optional<Schedule> scheduleDetailWithGivenId = scheduleRepository.findById(CommonUtils.safeToLong(id));
+
+            if (scheduleDetailWithGivenId.isPresent()) {
+
+                ScheduleDetailDTO scheduleDetailResult = mapper.mapScheduleDetailFromEntity(scheduleDetailWithGivenId.get());
+
+                // find all schedule_id in the table MapSchedule
+                List<MapSchedule> mapScheduleWithGivenId = mapScheduleRepository.findByScheduleId(CommonUtils.safeToLong(id));
+
+                // if find there is mapScheduleWithGivenId
+                if (!CollectionUtils.isEmpty(mapScheduleWithGivenId)) {
+                    // find all categories with category_id of each mapScheduleWithGivenId
+                    //                List<ScheduleCategories> categoryList = new ArrayList<>();
+                    List<Long> categoryIds = new ArrayList<>();
+
+                    // map through the mapScheduleWithGivenId and add category_id to the categoryIds
+                    mapScheduleWithGivenId.forEach((item) -> {
+                        categoryIds.add(item.getCategoryId());
+                    });
+
+                    if (!CollectionUtils.isEmpty(categoryIds)) {
+                        // get all categories from the categoryIds list and add it to the response
+                        List<ScheduleCategories> categoryList = scheduleCategoriesRepository.findAllById(categoryIds);
+                        scheduleDetailResult.setCategories(categoryList);
+                    }
+                }
+                return scheduleDetailResult;
+            } else {
+                throw new Exception("Schedule not found with id of " + id);
+            }
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

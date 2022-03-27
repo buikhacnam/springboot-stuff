@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.buinam.schedulemanger.dto.LazyLoadDTO;
 import com.buinam.schedulemanger.dto.ScheduleDTO;
+import com.buinam.schedulemanger.dto.ScheduleDetailDTO;
 import com.buinam.schedulemanger.model.Schedule;
 
 public interface ScheduleService {
@@ -14,4 +15,6 @@ public interface ScheduleService {
 
     List<Schedule> searchTextSchedule(String pageSize, String pageNumber, String name, String fromDate, String toDate,
             String description, String location, String searchText);
+
+    ScheduleDetailDTO getScheduleDetail(Long id) throws Exception;
 }

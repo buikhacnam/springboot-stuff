@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.buinam.schedulemanger.dto.LazyLoadDTO;
 import com.buinam.schedulemanger.dto.ScheduleDTO;
+import com.buinam.schedulemanger.dto.ScheduleDetailDTO;
 import com.buinam.schedulemanger.model.Schedule;
 import com.buinam.schedulemanger.service.ScheduleService;
 import com.buinam.schedulemanger.utils.CommonResponse;
@@ -65,28 +66,6 @@ public class ScheduleController {
         }
     }
 
-    @GetMapping("/search/text")
-    public List<Schedule> searchTextSchedule(
-        @RequestParam(required = false) String pageSize,
-        @RequestParam(required = false) String pageNumber,
-        @RequestParam(required = false) String name,
-        @RequestParam(required = false) String fromDate,
-        @RequestParam(required = false) String toDate,
-        @RequestParam(required = false) String description,
-        @RequestParam(required = false) String location,
-        @RequestParam(required = false) String searchText
-    ) {
-        try {
-            System.out.println("seeeeeeeeeeeeeeee" + searchText);
-            List<Schedule> schedules = scheduleService.searchTextSchedule(pageSize, pageNumber ,name, fromDate, toDate, description, location, searchText);
-            return schedules;
-        } catch(Exception e) {
-            System.out.print(e.getMessage() );
-            return null;
-        }
-    }
-
-
     @PostMapping("/save")
     public ResponseEntity<CommonResponse> createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         try {
@@ -122,4 +101,57 @@ public class ScheduleController {
             );
         }
     }
+
+    @GetMapping("details/{id}")
+    public ResponseEntity<CommonResponse> getScheduleDetail(@PathVariable(name = "id") Long id) {
+        try {
+            ScheduleDetailDTO scheduleDetailDTODTO = scheduleService.getScheduleDetail(id);
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            "get schedule details successfully",
+                            true,
+                            scheduleDetailDTODTO,
+                            HttpStatus.OK.value()
+                    ),
+                    HttpStatus.OK);
+        } catch(Exception e) {
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            e.getMessage(),
+                            true,
+                            null,
+                            HttpStatus.BAD_REQUEST.value()
+                    ),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
 }
+
+
+
+
+
+
+
+//@GetMapping("/search/text")
+//    public List<Schedule> searchTextSchedule(
+//        @RequestParam(required = false) String pageSize,
+//        @RequestParam(required = false) String pageNumber,
+//        @RequestParam(required = false) String name,
+//        @RequestParam(required = false) String fromDate,
+//        @RequestParam(required = false) String toDate,
+//        @RequestParam(required = false) String description,
+//        @RequestParam(required = false) String location,
+//        @RequestParam(required = false) String searchText
+//    ) {
+//        try {
+//            System.out.println("seeeeeeeeeeeeeeee" + searchText);
+//            List<Schedule> schedules = scheduleService.searchTextSchedule(pageSize, pageNumber ,name, fromDate, toDate, description, location, searchText);
+//            return schedules;
+//        } catch(Exception e) {
+//            System.out.print(e.getMessage() );
+//            return null;
+//        }
+//    }
