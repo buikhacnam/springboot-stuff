@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table
+
+// map schedule with category
 public class MapSchedule extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

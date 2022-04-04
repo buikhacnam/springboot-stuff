@@ -198,6 +198,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Optional<Schedule> schedule = scheduleRepository.findById(CommonUtils.safeToLong(scheduleDTO.getId()));
 
         if (!schedule.isPresent()) {
+            // create schedule
             scheduleToSave = mapper.mapScheduleFromDTO(scheduleDTO);
 
             scheduleToSave.setCreateDate(LocalDateTime.now());
@@ -206,13 +207,29 @@ public class ScheduleServiceImpl implements ScheduleService {
             scheduleToSave.setCreateUser(userName);
             scheduleToSave.setUpdateUser(userName);
 
+        } else {
+            // update schedule
+
+            scheduleToSave = schedule.get();
+            scheduleToSave.setUpdateDate(LocalDateTime.now());
+            String userName = scheduleDTO.getUpdateUser();
+            scheduleToSave.setUpdateUser(userName);
+            scheduleToSave.setName(scheduleDTO.getName());
+            scheduleToSave.setDescription(scheduleDTO.getDescription());
+            scheduleToSave.setLocation(scheduleDTO.getLocation());
+            scheduleToSave.setStartDateTime(scheduleDTO.getStartDateTime());
+            scheduleToSave.setEndDateTime(scheduleDTO.getEndDateTime());
+            // delete all map_schedule for this schedule
+            mapScheduleRepository.deleteAllByScheduleId(scheduleToSave.getId());
         }
+
         // save schedule data to schedule table
         Schedule scheduleSending = scheduleRepository.save(scheduleToSave);
 
         // if there is an array of categories being sent, then save them to the
         // map_schedule table
         if (!ObjectUtils.isEmpty(scheduleDTO.getCategories())) {
+
             // loop over the categories id list
             // save each category(id) to the categoryId field of map_schedule table
             // save the schedule id to the scheduleId field of map_schedule table
@@ -229,6 +246,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             });
 
             mapScheduleRepository.saveAll(mapScheduleList);
+
         }
 
         // convert data to DTO and add categoriest list

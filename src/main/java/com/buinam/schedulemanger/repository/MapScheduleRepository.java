@@ -10,5 +10,7 @@ public interface MapScheduleRepository extends JpaRepository<MapSchedule, Long> 
     List<MapSchedule> findAllById(Long id);
 
     List<MapSchedule> findByScheduleId(Long id);
+
+    void deleteAllByScheduleId(Long id);
 }
     
