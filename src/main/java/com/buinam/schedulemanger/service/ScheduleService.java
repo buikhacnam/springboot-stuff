@@ -13,8 +13,7 @@ public interface ScheduleService {
     LazyLoadDTO searchSchedule(String pageSize, String pageNumber, String name, String fromDate, String toDate,
             String description, String location, String textSearch, String orderBy, String orderType);
 
-    List<Schedule> searchTextSchedule(String pageSize, String pageNumber, String name, String fromDate, String toDate,
-            String description, String location, String searchText);
-
     ScheduleDetailDTO getScheduleDetail(Long id) throws Exception;
+
+    List<ScheduleDTO> getScheduleBetweenDates(String userName, String fromDate, String toDate);
 }

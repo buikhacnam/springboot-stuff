@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -256,20 +255,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     }
 
-    @Override
-    public List<Schedule> searchTextSchedule(String pageSize, String pageNumber, String name, String fromDate,
-            String toDate,
-            String description, String location, String searchText) {
 
-        System.out.println(searchText);
-        // return scheduleRepository.searchTextSchedule(searchText);
-
-        Long count = scheduleRepository.countAllByNameContaining(name);
-        List<Schedule> result = scheduleRepository.findAllByNameContaining(name);
-        System.out.println("count " + count);
-        return result;
-        // return scheduleRepository.searchTextSchedule(searchText);
-    }
 
     @Override
     public ScheduleDetailDTO getScheduleDetail(Long id) throws Exception{
@@ -308,4 +294,61 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw e;
         }
     }
+
+    @Override
+    public List<ScheduleDTO> getScheduleBetweenDates(String userName, String fromDate, String toDate) {
+//        LocalDateTime fromDateTime = null;
+//        LocalDateTime toDateTime = null;
+//        String strFormat = "yyyy-MM-dd";
+//
+//        System.out.println("strFromDate: " + fromDate);
+//        System.out.println("strToDate: " + toDate);
+//
+//        if (!Strings.isNullOrEmpty(fromDate)) {
+//            fromDateTime = DateUtil.convertStringToLocalDateTime(fromDate, strFormat);
+//        }
+//        if (!Strings.isNullOrEmpty(toDate)) {
+//            toDateTime = DateUtil.convertStringToLocalDateTime(toDate, strFormat);
+//        }
+//        if (fromDateTime != null && (toDateTime == null || fromDateTime.isEqual(toDateTime))) {
+//            toDateTime = fromDateTime.plusDays(1L);
+//        }
+
+        StringBuilder strQuery = new StringBuilder();
+        List<Object> listParam = new ArrayList<>();
+
+
+
+        strQuery.append("SELECT * FROM schedule s WHERE 1=1 ");
+
+        strQuery.append(" AND start_date_time >= ? ");
+        listParam.add(fromDate);
+
+        strQuery.append(" AND end_date_time <= ? ");
+        listParam.add(toDate);
+
+        strQuery.append(" AND s.update_user = ? ");
+        listParam.add(userName);
+
+        Query query = em.createNativeQuery(strQuery.toString(), Schedule.class);
+
+        for(int i = 0; i < listParam.size(); i++) {
+            query.setParameter(i + 1, listParam.get(i));
+        }
+
+        List<Schedule> scheduleList = query.getResultList();
+        List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
+        scheduleList.forEach(schedule -> {
+            scheduleDTOList.add(mapper.mapScheduleFromEntity(schedule));
+        });
+        return scheduleDTOList;
+
+//        List<Schedule> scheduleList = scheduleRepository.findByUserNameAndBetweenDates(userName, fromDate, toDate);
+//        List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
+//        scheduleList.forEach(schedule -> {
+//            scheduleDTOList.add(mapper.mapScheduleFromEntity(schedule));
+//        });
+//        return scheduleDTOList;
+    }
 }
+

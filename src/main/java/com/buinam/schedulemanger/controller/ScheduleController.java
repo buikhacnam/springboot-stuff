@@ -46,7 +46,7 @@ public class ScheduleController {
             LazyLoadDTO schedules = scheduleService.searchSchedule(pageSize, pageNumber, name, fromDate, toDate, description, location, textSearch, orderBy, orderType);
             return new ResponseEntity<>(
                 new CommonResponse(
-                    "Create schedule successfully",
+                    "Search schedule successfully",
                     true,
                     schedules,
                     HttpStatus.OK.value()
@@ -105,12 +105,41 @@ public class ScheduleController {
     @GetMapping("details/{id}")
     public ResponseEntity<CommonResponse> getScheduleDetail(@PathVariable(name = "id") Long id) {
         try {
-            ScheduleDetailDTO scheduleDetailDTODTO = scheduleService.getScheduleDetail(id);
+            ScheduleDetailDTO scheduleDetailDTO = scheduleService.getScheduleDetail(id);
             return new ResponseEntity<>(
                     new CommonResponse(
                             "get schedule details successfully",
                             true,
-                            scheduleDetailDTODTO,
+                            scheduleDetailDTO,
+                            HttpStatus.OK.value()
+                    ),
+                    HttpStatus.OK);
+        } catch(Exception e) {
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            e.getMessage(),
+                            true,
+                            null,
+                            HttpStatus.BAD_REQUEST.value()
+                    ),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @GetMapping("/calendar")
+    public ResponseEntity<CommonResponse> getScheduleBetweenDates(
+        @RequestParam(required = false) String fromDate,
+        @RequestParam(required = false) String toDate
+    ) {
+        String userName = "buinam";
+        try {
+            List<ScheduleDTO> scheduleDTOList = scheduleService.getScheduleBetweenDates(userName, fromDate, toDate);
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            "get schedule between dates successfully",
+                            true,
+                            scheduleDTOList,
                             HttpStatus.OK.value()
                     ),
                     HttpStatus.OK);
