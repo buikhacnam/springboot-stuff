@@ -296,59 +296,57 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<ScheduleDTO> getScheduleBetweenDates(String userName, String fromDate, String toDate) {
-//        LocalDateTime fromDateTime = null;
-//        LocalDateTime toDateTime = null;
-//        String strFormat = "yyyy-MM-dd";
+    public List<ScheduleDetailDTO> getScheduleBetweenDates(String userName, String fromDate, String toDate, List<Long> categories) {
+
+
+        List<Schedule> scheduleList = null;
+        List<ScheduleDetailDTO> scheduleDetailDTOList = new ArrayList<>();
+
+        if(!CollectionUtils.isEmpty(categories)) {
+            //find all mapSchedule which has categoryID
+            List<MapSchedule> mapScheduleList = mapScheduleRepository.findAllByCategoryId(categories);
+            List<Long> scheduleIds = new ArrayList<>();
+            mapScheduleList.forEach(m -> {
+                scheduleIds.add(m.getScheduleId());
+            });
+            scheduleList = scheduleRepository.findByUserNameAndBetweenDatesAndIds(userName, fromDate, toDate, scheduleIds);
+
+            scheduleList.forEach(schedule -> {
+                ScheduleDetailDTO scheduleDetailDTO = mapper.mapScheduleDetailFromEntity(schedule);
+                scheduleDetailDTOList.add(scheduleDetailDTO);
+            });
+
+
+        } else {
+            scheduleList = scheduleRepository.findByUserNameAndBetweenDates(userName, fromDate, toDate);
+
+            scheduleList.forEach(schedule -> {
+                ScheduleDetailDTO scheduleDetailDTO = mapper.mapScheduleDetailFromEntity(schedule);
+
+                //attach categories to every schedule found
+//                //find all mapSchedule which has scheduleId
+//                List<MapSchedule> mapScheduleList = mapScheduleRepository.findByScheduleId(schedule.getId());
 //
-//        System.out.println("strFromDate: " + fromDate);
-//        System.out.println("strToDate: " + toDate);
+//                if(!CollectionUtils.isEmpty(mapScheduleList)) {
 //
-//        if (!Strings.isNullOrEmpty(fromDate)) {
-//            fromDateTime = DateUtil.convertStringToLocalDateTime(fromDate, strFormat);
-//        }
-//        if (!Strings.isNullOrEmpty(toDate)) {
-//            toDateTime = DateUtil.convertStringToLocalDateTime(toDate, strFormat);
-//        }
-//        if (fromDateTime != null && (toDateTime == null || fromDateTime.isEqual(toDateTime))) {
-//            toDateTime = fromDateTime.plusDays(1L);
-//        }
+//                    // loop through the mapSchedule to grab a List of categoryId
+//                    List<Long> categoryIds = new ArrayList<>();
+//                    mapScheduleList.forEach(m -> {
+//                        categoryIds.add(m.getCategoryId());
+//                    });
+//
+//                    //get all categories from the list of categoryId
+//                    List<ScheduleCategories> categoriesList = scheduleCategoriesRepository.findAllById(categoryIds);
+//
+//                    //set categoryList to each scheduleDetailDTO found
+//                    scheduleDetailDTO.setCategories(categoriesList);
+//                }
 
-        StringBuilder strQuery = new StringBuilder();
-        List<Object> listParam = new ArrayList<>();
-
-
-
-        strQuery.append("SELECT * FROM schedule s WHERE 1=1 ");
-
-        strQuery.append(" AND start_date_time >= ? ");
-        listParam.add(fromDate);
-
-        strQuery.append(" AND end_date_time <= ? ");
-        listParam.add(toDate);
-
-        strQuery.append(" AND s.update_user = ? ");
-        listParam.add(userName);
-
-        Query query = em.createNativeQuery(strQuery.toString(), Schedule.class);
-
-        for(int i = 0; i < listParam.size(); i++) {
-            query.setParameter(i + 1, listParam.get(i));
+                scheduleDetailDTOList.add(scheduleDetailDTO);
+            });
         }
 
-        List<Schedule> scheduleList = query.getResultList();
-        List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
-        scheduleList.forEach(schedule -> {
-            scheduleDTOList.add(mapper.mapScheduleFromEntity(schedule));
-        });
-        return scheduleDTOList;
-
-//        List<Schedule> scheduleList = scheduleRepository.findByUserNameAndBetweenDates(userName, fromDate, toDate);
-//        List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
-//        scheduleList.forEach(schedule -> {
-//            scheduleDTOList.add(mapper.mapScheduleFromEntity(schedule));
-//        });
-//        return scheduleDTOList;
+        return scheduleDetailDTOList;
     }
 }
 

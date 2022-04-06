@@ -129,12 +129,13 @@ public class ScheduleController {
 
     @GetMapping("/calendar")
     public ResponseEntity<CommonResponse> getScheduleBetweenDates(
-        @RequestParam(required = false) String fromDate,
-        @RequestParam(required = false) String toDate
+        @RequestParam(required = true) String fromDate,
+        @RequestParam(required = true) String toDate,
+        @RequestParam(required = false) List<Long> categories
     ) {
         String userName = "buinam";
         try {
-            List<ScheduleDTO> scheduleDTOList = scheduleService.getScheduleBetweenDates(userName, fromDate, toDate);
+            List<ScheduleDetailDTO> scheduleDTOList = scheduleService.getScheduleBetweenDates(userName, fromDate, toDate, categories);
             return new ResponseEntity<>(
                     new CommonResponse(
                             "get schedule between dates successfully",
@@ -157,30 +158,3 @@ public class ScheduleController {
     }
 
 }
-
-
-
-
-
-
-
-//@GetMapping("/search/text")
-//    public List<Schedule> searchTextSchedule(
-//        @RequestParam(required = false) String pageSize,
-//        @RequestParam(required = false) String pageNumber,
-//        @RequestParam(required = false) String name,
-//        @RequestParam(required = false) String fromDate,
-//        @RequestParam(required = false) String toDate,
-//        @RequestParam(required = false) String description,
-//        @RequestParam(required = false) String location,
-//        @RequestParam(required = false) String searchText
-//    ) {
-//        try {
-//            System.out.println("seeeeeeeeeeeeeeee" + searchText);
-//            List<Schedule> schedules = scheduleService.searchTextSchedule(pageSize, pageNumber ,name, fromDate, toDate, description, location, searchText);
-//            return schedules;
-//        } catch(Exception e) {
-//            System.out.print(e.getMessage() );
-//            return null;
-//        }
-//    }

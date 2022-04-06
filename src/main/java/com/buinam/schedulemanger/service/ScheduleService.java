@@ -15,5 +15,5 @@ public interface ScheduleService {
 
     ScheduleDetailDTO getScheduleDetail(Long id) throws Exception;
 
-    List<ScheduleDTO> getScheduleBetweenDates(String userName, String fromDate, String toDate);
+    List<ScheduleDetailDTO> getScheduleBetweenDates(String userName, String fromDate, String toDate, List<Long> categories);
 }
