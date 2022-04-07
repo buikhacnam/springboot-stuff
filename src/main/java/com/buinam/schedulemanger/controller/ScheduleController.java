@@ -1,5 +1,6 @@
 package com.buinam.schedulemanger.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,10 @@ import com.buinam.schedulemanger.utils.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,10 +72,10 @@ public class ScheduleController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<CommonResponse> createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+    public ResponseEntity<CommonResponse> createSchedule(Principal principal, @RequestBody ScheduleDTO scheduleDTO) {
         try {
             // get userName from principal:
-            String userName = "buinam";
+            String userName = principal.getName();
             scheduleDTO.setCreateUser(userName);
             scheduleDTO.setUpdateUser(userName);
 
@@ -103,9 +108,10 @@ public class ScheduleController {
     }
 
     @GetMapping("details/{id}")
-    public ResponseEntity<CommonResponse> getScheduleDetail(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<CommonResponse> getScheduleDetail(Principal principal, @PathVariable(name = "id") Long id) {
+        String userName = principal.getName();
         try {
-            ScheduleDetailDTO scheduleDetailDTO = scheduleService.getScheduleDetail(id);
+            ScheduleDetailDTO scheduleDetailDTO = scheduleService.getScheduleDetail(userName,id);
             return new ResponseEntity<>(
                     new CommonResponse(
                             "get schedule details successfully",
@@ -129,11 +135,12 @@ public class ScheduleController {
 
     @GetMapping("/calendar")
     public ResponseEntity<CommonResponse> getScheduleBetweenDates(
+            Principal principal,
         @RequestParam(required = true) String fromDate,
         @RequestParam(required = true) String toDate,
         @RequestParam(required = false) List<Long> categories
     ) {
-        String userName = "buinam";
+        String userName = principal.getName();
         try {
             List<ScheduleDetailDTO> scheduleDTOList = scheduleService.getScheduleBetweenDates(userName, fromDate, toDate, categories);
             return new ResponseEntity<>(

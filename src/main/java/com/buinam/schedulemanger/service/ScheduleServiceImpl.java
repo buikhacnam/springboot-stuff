@@ -258,9 +258,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 
     @Override
-    public ScheduleDetailDTO getScheduleDetail(Long id) throws Exception{
+    public ScheduleDetailDTO getScheduleDetail(String userName, Long id) throws Exception{
         try {
-            Optional<Schedule> scheduleDetailWithGivenId = scheduleRepository.findById(CommonUtils.safeToLong(id));
+            Optional<Schedule> scheduleDetailWithGivenId = scheduleRepository.findByIdAndUserName(CommonUtils.safeToLong(id), userName);
 
             if (scheduleDetailWithGivenId.isPresent()) {
 
