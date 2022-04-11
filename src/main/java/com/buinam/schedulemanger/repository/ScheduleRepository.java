@@ -18,15 +18,16 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     public List<Schedule> findAllByNameContaining(String name);
 
-    @Query(value = "SELECT * FROM schedule s WHERE s.create_user = ?1 AND s.start_date_time >= ?2 AND s.end_date_time <= ?3", nativeQuery = true)
+    @Query(value = "SELECT * FROM schedule s WHERE s.create_user = ?1 AND (" +
+            "s.start_date_time >= DATE_SUB(?2, INTERVAL 31 DAY) AND s.end_date_time <= DATE_ADD(?3, INTERVAL 31 DAY)" +
+            ")", nativeQuery = true)
     List<Schedule> findByUserNameAndBetweenDates(String userName, String fromDate, String toDate);
 
-    @Query(value = "SELECT * FROM schedule s WHERE s.create_user = ?1 AND s.start_date_time >= ?2 AND s.end_date_time <= ?3 AND s.id IN ?4", nativeQuery = true)
+    @Query(value = "SELECT * FROM schedule s WHERE s.create_user = ?1 AND ss.start_date_time >= DATE_SUB(?2, INTERVAL 31 DAY) AND s.end_date_time <= DATE_ADD(?3, INTERVAL 31 DAY) AND s.id IN ?4", nativeQuery = true)
     List<Schedule> findByUserNameAndBetweenDatesAndIds(String userName, String fromDate, String toDate, List<Long> scheduleIds);
 
     @Query(value = "SELECT * FROM schedule s WHERE s.id = ?1 AND s.create_user = ?2", nativeQuery = true)
     Optional<Schedule> findByIdAndUserName(Long safeToLong, String userName);
 
-    // public List<Schedule> findAllByNameContainingAndDescriptionContainingAndLocationContaining(String name, String description, String location);
-
 }
+

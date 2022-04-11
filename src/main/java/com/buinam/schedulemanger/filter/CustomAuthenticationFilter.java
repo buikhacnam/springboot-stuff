@@ -82,6 +82,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         tokens.put("refresh_token", refresh_token);
         tokens.put("user", user.getUsername());
         tokens.put("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()).toString());
+        log.info("Tokens: {}", tokens);
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
@@ -91,6 +92,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         Map<String, String> message_error = new HashMap<>();
         message_error.put("error", failed.getMessage());
         response.setContentType(APPLICATION_JSON_VALUE);
+        response.setStatus(401);
         new ObjectMapper().writeValue(response.getOutputStream(), message_error);
 //        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, failed.getMessage());
     }
