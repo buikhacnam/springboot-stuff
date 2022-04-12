@@ -9,4 +9,6 @@ public interface ScheduleCategoriesService {
     ScheduleCategories createOrUpdateScheduleCategories(ScheduleCategories scheduleCategories);
 
     LazyLoadDTO search(String textSeach);
+
+    ScheduleCategories findCategoryById(Long id);
 }

@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 @Service
+@Transactional
 public class ScheduleCategoriesServiceImpl implements ScheduleCategoriesService {
     
     @Autowired
@@ -33,9 +35,15 @@ public class ScheduleCategoriesServiceImpl implements ScheduleCategoriesService 
         if(!scheduleCategoriesResult.isPresent()) {
             scheduleCategories.setCreateDate(LocalDateTime.now());
             scheduleCategories.setUpdateDate(LocalDateTime.now());
+            scheduleCategoriesRepository.save(scheduleCategories);
+        } else {
+            ScheduleCategories scheduleCategoryUpdate = scheduleCategoriesResult.get();
+            scheduleCategoryUpdate.setUpdateDate(LocalDateTime.now());
+            scheduleCategoryUpdate.setName(scheduleCategories.getName());
+            scheduleCategoryUpdate.setDescription(scheduleCategories.getDescription());
+            scheduleCategoryUpdate.setColorSchedule(scheduleCategories.getColorSchedule());
+            scheduleCategoriesRepository.save(scheduleCategoryUpdate);
         }
-
-        scheduleCategoriesRepository.save(scheduleCategories);
         return scheduleCategories;
     }
 
@@ -43,6 +51,16 @@ public class ScheduleCategoriesServiceImpl implements ScheduleCategoriesService 
     public LazyLoadDTO search(String textSeach) {
         LazyLoadDTO lazyLoadDTO = executeSearch(textSeach);
         return lazyLoadDTO;
+    }
+
+    @Override
+    public ScheduleCategories findCategoryById(Long id) {
+        Optional<ScheduleCategories> category = scheduleCategoriesRepository.findById(CommonUtils.safeToLong(id));
+        if(category.isPresent()) {
+            return category.get();
+        } else {
+            return null;
+        }
     }
 
     private LazyLoadDTO executeSearch(String textSeach) {

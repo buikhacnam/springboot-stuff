@@ -75,6 +75,33 @@ public class ScheduleCategoriesController {
 
     }
 
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<CommonResponse> findCategoryById(@PathVariable("id") Long id) {
+        ScheduleCategories scheduleCategories = scheduleCategoriesService.findCategoryById(id);
+        try {
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            "Search schedule successfully",
+                            true,
+                            scheduleCategories,
+                            HttpStatus.OK.value()
+                    ),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            e.getMessage(),
+                            true,
+                            null,
+                            HttpStatus.BAD_REQUEST.value()
+                    ),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+    }
+
 
 
 }
