@@ -7,11 +7,13 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.buinam.schedulemanger.model.AppUser;
 import com.buinam.schedulemanger.model.Role;
 import com.buinam.schedulemanger.service.AppUserService;
+import com.buinam.schedulemanger.utils.CommonResponse;
 import com.buinam.schedulemanger.utils.JwtUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -47,8 +49,29 @@ public class AppUserController {
 
     //get all users
     @GetMapping("/users")
-    public ResponseEntity<List<AppUser>> getAllUsers(){
-        return ResponseEntity.ok().body(appUserService.getUsers());
+    public ResponseEntity<CommonResponse> getAllUsers(@RequestParam(required = false) String textSearch){
+        try {
+            List<AppUser> appUsers = appUserService.getUsers(textSearch);
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            "Search schedule successfully",
+                            true,
+                            appUsers,
+                            HttpStatus.OK.value()
+                    ),
+                    HttpStatus.OK)
+                    ;
+        } catch(Exception e) {
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            e.getMessage(),
+                            true,
+                            null,
+                            HttpStatus.BAD_REQUEST.value()
+                    ),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
     }
 
     //save user

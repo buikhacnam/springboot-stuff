@@ -10,6 +10,6 @@ public interface AppUserService {
     Role saveRole(Role role);
     void addRoleToUser(String userName, String roleName);
     AppUser getUser(String userName);
-    List<AppUser> getUsers();
+    List<AppUser> getUsers(String textSearch);
 }
 

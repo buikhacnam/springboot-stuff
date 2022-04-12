@@ -90,9 +90,12 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
     }
 
     @Override
-    public List<AppUser> getUsers() {
+    public List<AppUser> getUsers(String textSearch) {
         log.info("Getting all users");
-        return appUserRepository.findAll();
+        if(textSearch == null || textSearch.isEmpty()) {
+            return appUserRepository.findAll();
+        }
+        return appUserRepository.findAllByName(textSearch);
     }
 
 }
