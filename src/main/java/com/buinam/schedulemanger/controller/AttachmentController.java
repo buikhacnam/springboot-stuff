@@ -3,11 +3,13 @@ package com.buinam.schedulemanger.controller;
 import com.buinam.schedulemanger.model.Attachment;
 import com.buinam.schedulemanger.model.AttachmentResponse;
 import com.buinam.schedulemanger.service.AttachmentService;
+import com.buinam.schedulemanger.utils.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,7 @@ public class AttachmentController {
     private AttachmentService attachmentService;
 
     @PostMapping("/upload")
-    public AttachmentResponse uploadAttachment(@RequestParam("file") MultipartFile file) throws Exception {
+    public ResponseEntity<CommonResponse> uploadAttachment(@RequestParam("file") MultipartFile file) throws Exception {
 
         Attachment attachment = attachmentService.saveAttachment(file);
         String downloadURl = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -30,12 +32,20 @@ public class AttachmentController {
                 .path(attachment.getId())
                 .toUriString();
 
-        return new AttachmentResponse(
-                attachment.getFileName(),
-                downloadURl,
-                file.getContentType(),
-                file.getSize()
-        );
+        return new ResponseEntity<>(
+                new CommonResponse(
+                        "save attachment successfully",
+                        true,
+                        new AttachmentResponse(
+                                attachment.getFileName(),
+                                downloadURl,
+                                file.getContentType(),
+                                file.getSize()
+                        ),
+                        HttpStatus.OK.value()
+                ),
+                HttpStatus.OK)
+                ;
     }
 
     @GetMapping("/download/{id}")
