@@ -48,6 +48,31 @@ public class AttachmentController {
                 ;
     }
 
+    @PostMapping("/upload/dir")
+    public ResponseEntity<CommonResponse> uploadAttachment(@RequestParam("file") MultipartFile file,  @RequestParam(required = false, defaultValue = "") String toDir) throws Exception {
+        Attachment attachment = attachmentService.saveAttachmentToDir(file, "C:\\Host\\schedule-manger\\downloads\\");
+
+        String downloadURl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/downloads/")
+                .path(attachment.getFileName())
+                .toUriString();
+
+        return new ResponseEntity<>(
+                new CommonResponse(
+                        "save attachment to dir successfully",
+                        true,
+                        new AttachmentResponse(
+                                attachment.getFileName(),
+                                downloadURl,
+                                file.getContentType(),
+                                file.getSize()
+                        ),
+                        HttpStatus.OK.value()
+                ),
+                HttpStatus.OK)
+                ;
+    }
+
     @GetMapping("/download/{id}")
     public ResponseEntity<Resource> downloadAttachment(@PathVariable String id) throws Exception {
         Attachment attachment = attachmentService.getAttachment(id);
