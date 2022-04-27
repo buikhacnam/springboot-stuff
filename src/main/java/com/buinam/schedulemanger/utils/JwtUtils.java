@@ -27,7 +27,7 @@ public class JwtUtils {
     public static String generateAccessToken(User user, HttpServletRequest request) {
         return JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream().map((GrantedAuthority g) -> g.getAuthority()).collect(Collectors.toList()))
                 .sign(algorithm);
@@ -37,7 +37,7 @@ public class JwtUtils {
     public static String generateAccessToken(AppUser user, HttpServletRequest request) {
         return JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getRoles().stream().map((Role role) -> role.getName()).collect(Collectors.toList()))
                 .sign(algorithm);
@@ -46,7 +46,7 @@ public class JwtUtils {
     public static String generateRefreshToken(User user, HttpServletRequest request) {
         return JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000 ))
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
     }
