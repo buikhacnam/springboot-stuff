@@ -1,5 +1,6 @@
 package com.buinam.schedulemanger.model;
 
+import com.buinam.schedulemanger.dto.StudentDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,23 @@ import java.util.Set;
 @Table
 // a subject is going to have many students and
 // a student is going to have many subjects
+@NamedNativeQuery(name = "getAllEnrolledStudent",
+        query = "SELECT * FROM student_enrolled",
+        resultSetMapping = "student_enrolled_kkk"
+)
+@SqlResultSetMappings({
+        @SqlResultSetMapping(
+                name = "student_enrolled_kkk",
+                classes = {
+                        @ConstructorResult(
+                                targetClass = StudentDTO.class,
+                                columns = {
+                                        @ColumnResult(name = "subject_id", type = Long.class),
+                                        @ColumnResult(name = "student_id", type = Long.class)
+                                })
+                }
+        )
+})
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
