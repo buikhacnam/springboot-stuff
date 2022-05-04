@@ -1,11 +1,9 @@
 package com.buinam.schedulemanger.model;
 
-import com.buinam.schedulemanger.dto.StudentDTO;
+import com.buinam.schedulemanger.dto.StudentEnrolledDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -26,7 +24,7 @@ import java.util.Set;
                 name = "student_enrolled_kkk",
                 classes = {
                         @ConstructorResult(
-                                targetClass = StudentDTO.class,
+                                targetClass = StudentEnrolledDTO.class,
                                 columns = {
                                         @ColumnResult(name = "subject_id", type = Long.class),
                                         @ColumnResult(name = "student_id", type = Long.class)
