@@ -37,7 +37,7 @@ public class StudentController {
     }
 
     @GetMapping("/all")
-    List<?> getStudentsWithSubjects() {
+    List<StudentDTO> getStudentsWithSubjects() {
 
         List<Student> students = studentRepository.findAll();
         List<StudentDTO> studentEnrolledDTOList = new ArrayList<>();
@@ -50,10 +50,8 @@ public class StudentController {
             listParam.add(student.getId());
             Query query = em.createNativeQuery("SELECT * FROM student_enrolled s WHERE s.student_id = ?", "student_enrolled_kkk");
             query.setParameter(1, student.getId());
-            System.out.println(query.getResultList());
             List<StudentEnrolledDTO> studentEnrolledList = query.getResultList();
             studentEnrolledList.forEach(s -> {
-                System.out.println("sssssssssssss"+ s);
                 Optional<Subject> subject = subjectRepository.findById(s.getSubject_id());
                 if(subject.isPresent()) {
                     System.out.println(subject.get());
@@ -64,18 +62,9 @@ public class StudentController {
         }).collect(Collectors.toList());
 
         return studentEnrolledDTOList;
-
-
-
 //        Query query = em.createNativeQuery(strQuery.toString(), "student_enrolled_kkk");
-        
         //or using @NamedNativeQuery
 //        Query query = em.createNamedQuery("getAllEnrolledStudent");
-        
-        
-        
-
-
 
     }
 
