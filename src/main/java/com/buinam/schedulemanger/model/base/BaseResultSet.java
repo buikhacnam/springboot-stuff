@@ -2,7 +2,6 @@ package com.buinam.schedulemanger.model.base;
 
 import com.buinam.schedulemanger.dto.ResultsetDemoOne;
 import com.buinam.schedulemanger.dto.ResultsetDemoTwo;
-import com.buinam.schedulemanger.dto.StudentDTO;
 
 import javax.persistence.*;
 
