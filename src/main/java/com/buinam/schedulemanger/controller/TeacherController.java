@@ -43,4 +43,12 @@ public class TeacherController {
     }
 
 
+    @GetMapping("/{id}")
+    TeacherDTO getTeacher(@PathVariable Long id) {
+        Teacher teacher = teacherRepository.findById(id).orElse(null);
+        TeacherDTO teacherDTO = mapper.mapTeacherFromEntity(teacher);
+        return teacherDTO;
+    }
+
+
 }
