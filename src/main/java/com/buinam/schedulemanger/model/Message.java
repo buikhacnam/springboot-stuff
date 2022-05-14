@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class Message {
     private String senderName;
     private String receiverName;
     private String message;
-    private String date;
+    private LocalDateTime date;
     private StatusDTO status;
     private Long chatId;
 }

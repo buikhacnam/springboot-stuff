@@ -1,6 +1,7 @@
 package com.buinam.schedulemanger.controller;
 
 import com.buinam.schedulemanger.dto.MessageDTO;
+import com.buinam.schedulemanger.dto.StatusDTO;
 import com.buinam.schedulemanger.model.Message;
 import com.buinam.schedulemanger.model.Chat;
 import com.buinam.schedulemanger.repository.MessageRepository;
@@ -12,6 +13,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -53,8 +55,8 @@ public class ChatController {
         newMessage.setSenderName(messagePayload.getSenderName());
         newMessage.setReceiverName(messagePayload.getReceiverName());
         newMessage.setMessage(messagePayload.getMessage());
-        newMessage.setDate(messagePayload.getDate());
-        newMessage.setStatus(messagePayload.getStatus());
+        newMessage.setDate(LocalDateTime.now());
+        newMessage.setStatus(StatusDTO.valueOf(String.valueOf(messagePayload.getStatus())));
 
          //if not exists, create a new chat
         if(!messageOptional.isPresent()) {
