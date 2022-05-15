@@ -76,5 +76,34 @@ public class ChatHistoryController {
         }
 
     }
+
+    @GetMapping("/conversation/{senderName}")
+    public ResponseEntity<CommonResponse> searchConversations(
+            @PathVariable(name = "senderName") String senderName
+    ) {
+        try{
+            List<Chat> conversations = messageService.searchConversations(senderName);
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            "search conversation successfully",
+                            true,
+                            conversations,
+                            HttpStatus.OK.value()
+                    ),
+                    HttpStatus.OK
+            );
+        } catch(Exception e) {
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            e.getMessage(),
+                            true,
+                            null,
+                            HttpStatus.BAD_REQUEST.value()
+                    ),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+    }
 }
 

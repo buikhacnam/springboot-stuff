@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 
 @NoArgsConstructor
@@ -17,5 +18,7 @@ public class Chat {
     private Long id;
     private String userOne;
     private String userTwo;
+//  private LocalDateTime createdTime;
+//  private LocalDateTime lastModifiedTime;
 
 }

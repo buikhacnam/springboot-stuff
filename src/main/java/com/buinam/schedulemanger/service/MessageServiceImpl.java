@@ -85,9 +85,6 @@ public class MessageServiceImpl implements MessageService {
 
     }
 
-
-
-
     private LazyLoadDTO executeSearchMessageByCondition(Long chatId, String message, LocalDateTime fromDate, LocalDateTime toDate, String pageSize, String pageNumber, boolean isCount) {
         LazyLoadDTO lazyLoadDTO = new LazyLoadDTO();
         List<Object> listParam = new ArrayList<>();
@@ -155,6 +152,15 @@ public class MessageServiceImpl implements MessageService {
 
         return lazyLoadDTO;
 
+    }
+
+    @Override
+    public List<Chat> searchConversations(String senderName) {
+        List<Chat> chats = chatRepository.findConversationsWithSenderOrReceiver(senderName);
+        if(chats != null && !chats.isEmpty()) {
+            return chats;
+        }
+        return null;
     }
 
 }
