@@ -1,5 +1,6 @@
 package com.buinam.schedulemanger.service;
 
+import com.buinam.schedulemanger.dto.ConversationDTO;
 import com.buinam.schedulemanger.dto.LazyLoadDTO;
 import com.buinam.schedulemanger.model.Chat;
 import com.buinam.schedulemanger.model.Message;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -69,12 +71,10 @@ public class MessageServiceImpl implements MessageService {
         LazyLoadDTO lazyLoadDTO = executeSearchMessageByCondition(chatId, message, fromDate, toDate, pageSize, pageNumber,true );
         if(lazyLoadDTO != null) {
 
-            System.out.println("MAKE IT HERE!!!!!!!!!!!!!!!!!");
             BigDecimal count = lazyLoadDTO.getCount();
 
             // if count is greater than 0
             if(count.compareTo(BigDecimal.ZERO) > 0) {
-                System.out.println("MAKE IT HERE2222!!!!!!!!!!!!!!!!!");
                 // get the schedule list
                 lazyLoadDTO = executeSearchMessageByCondition(chatId, message, fromDate, toDate, pageSize, pageNumber,false );
                 lazyLoadDTO.setCount(count);
@@ -132,9 +132,7 @@ public class MessageServiceImpl implements MessageService {
             BigDecimal count = new BigDecimal((BigInteger) query.getSingleResult());
             lazyLoadDTO.setCount(count);
         } else {
-            System.out.println("MAKE IT HERE3333!!!!!!!!!!!!!!!!!");
             if(!Strings.isNullOrEmpty(pageSize) && !Strings.isNullOrEmpty(pageNumber)) {
-                System.out.println("MAKE IT HERE4444!!!!!!!!!!!!!!!!!");
                 int page = Integer.parseInt(pageNumber);
                 int size = Integer.parseInt(pageSize);
                 Pageable pageable = PageRequest.of(page, size);
@@ -155,12 +153,49 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Chat> searchConversations(String senderName) {
+    public List<ConversationDTO> searchConversations(String senderName) {
         List<Chat> chats = chatRepository.findConversationsWithSenderOrReceiver(senderName);
         if(chats != null && !chats.isEmpty()) {
-            return chats;
+            List<ConversationDTO> conversations = chats.stream().map(chat -> {
+                ConversationDTO conversationDTO = new ConversationDTO();
+                conversationDTO.setId(chat.getId());
+
+                if(!chat.getUserOne().equals(chat.getUserTwo()) && !chat.getUserOne().equals(senderName)) {
+                    conversationDTO.setUser(chat.getUserOne());
+                    conversationDTO.setUnRead(chat.getUnReadOne());
+                }
+                if(!chat.getUserOne().equals(chat.getUserTwo()) && !chat.getUserTwo().equals(senderName)) {
+                    conversationDTO.setUser(chat.getUserTwo());
+                    conversationDTO.setUnRead(chat.getUnReadTwo());
+                }
+                if(chat.getUserOne().equals(chat.getUserTwo())) {
+                    conversationDTO.setUser(chat.getUserOne());
+                    conversationDTO.setUnRead(0L);
+                }
+                return conversationDTO;
+            }).collect(Collectors.toList());
+
+            return conversations;
         }
         return null;
+    }
+
+    @Override
+    public Chat seenMessage(String senderName, String receiverName) {
+        Optional<Chat> chatOptional = Optional.ofNullable(chatRepository.findExistedChat(senderName, receiverName));
+
+        if(chatOptional.isPresent()) {
+            Chat chat = chatOptional.get();
+            if(chat.getUserOne().equals(receiverName)) {
+                chat.setUnReadOne(0L);
+            }
+            if(chat.getUserTwo().equals(receiverName)) {
+                chat.setUnReadTwo(0L);
+            }
+            return chatRepository.save(chat);
+        } else {
+            throw new RuntimeException("Chat not found");
+        }
     }
 
 }

@@ -18,7 +18,6 @@ public class Chat {
     private Long id;
     private String userOne;
     private String userTwo;
-//  private LocalDateTime createdTime;
-//  private LocalDateTime lastModifiedTime;
-
+    private Long unReadOne;
+    private Long unReadTwo;
 }
