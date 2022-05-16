@@ -63,7 +63,8 @@ public class ChatController {
             Chat savedChat = new Chat();
             savedChat.setUserOne(messagePayload.getSenderName());
             savedChat.setUserTwo(messagePayload.getReceiverName());
-
+            savedChat.setUnReadOne(1L);
+            savedChat.setUnReadTwo(0L);
 
             System.out.println("savedMessage: " + savedChat.toString());
             Chat chatSaved = chatRepository.save(savedChat);
@@ -78,7 +79,15 @@ public class ChatController {
 
 //        //if exists, push the new message to the chat
         if(messageOptional.isPresent()) {
+            Chat savedChat = messageOptional.get();
+            if(messagePayload.getReceiverName().equals(savedChat.getUserOne())) {
+                savedChat.setUnReadTwo(savedChat.getUnReadTwo() + 1);
+            }
+            if(messagePayload.getReceiverName().equals(savedChat.getUserTwo())) {
+                savedChat.setUnReadOne(savedChat.getUnReadOne() + 1);
+            }
             System.out.println("CHAT DOES EXISTS");
+            chatRepository.save(savedChat);
             newMessage.setChatId(messageOptional.get().getId());
             messageRepository.save(newMessage);
         }
