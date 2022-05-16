@@ -1,5 +1,3 @@
-## SCHEDULE MANAGER BACKEND
+## Common Services And Tools
 
-### FRONTEND REPOSITORY:
-https://github.com/buikhacnam/schedule-manager-ui
 
