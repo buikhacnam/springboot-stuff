@@ -110,8 +110,8 @@ public class MessageServiceImpl implements MessageService {
         }
 
         if(!Strings.isNullOrEmpty(message)) {
-            strQuery.append(" AND message LIKE ? ");
-            listParam.add("%" + message + "%");
+            strQuery.append(" AND message = ? ");
+            listParam.add(message);
         }
 
         strQuery.append(" ORDER BY m.date DESC ");
