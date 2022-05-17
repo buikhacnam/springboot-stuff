@@ -19,6 +19,7 @@ public class Message {
     private Long id;
     private String senderName;
     private String receiverName;
+    @Lob
     private String message;
     private LocalDateTime date;
     private StatusDTO status;

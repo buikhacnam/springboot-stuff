@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.buinam.schedulemanger.dto.SimpleUserDTO;
 import com.buinam.schedulemanger.model.AppUser;
 import com.buinam.schedulemanger.model.Role;
 import com.buinam.schedulemanger.service.AppUserService;
@@ -45,6 +46,32 @@ public class AppUserController {
     @GetMapping("/test")
     public String test(){
         return "test";
+    }
+
+    @GetMapping("/user/search")
+    public ResponseEntity<CommonResponse> searchUsers(@RequestParam(required = false) String textSearch){
+        try {
+            List<SimpleUserDTO> appUsers = appUserService.searchUsers(textSearch);
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            "Search users successfully",
+                            true,
+                            appUsers,
+                            HttpStatus.OK.value()
+                    ),
+                    HttpStatus.OK)
+                    ;
+        } catch(Exception e) {
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            e.getMessage(),
+                            true,
+                            null,
+                            HttpStatus.BAD_REQUEST.value()
+                    ),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
     }
 
     //get all users

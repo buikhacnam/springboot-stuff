@@ -1,5 +1,6 @@
 package com.buinam.schedulemanger.service;
 
+import com.buinam.schedulemanger.dto.SimpleUserDTO;
 import com.buinam.schedulemanger.model.AppUser;
 import com.buinam.schedulemanger.model.Role;
 import com.buinam.schedulemanger.repository.AppUserRepository;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -96,6 +98,22 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
             return appUserRepository.findAll();
         }
         return appUserRepository.findAllByName(textSearch);
+    }
+
+    @Override
+    public List<SimpleUserDTO> searchUsers(String textSearch) {
+        List<AppUser> users = null;
+        if(textSearch == null || textSearch.isEmpty()) {
+            users = appUserRepository.findAll();
+        } else {
+            users = appUserRepository.findAllByName(textSearch);
+        }
+        return users.stream().map(user -> {
+            SimpleUserDTO simpleUserDTO = new SimpleUserDTO();
+            simpleUserDTO.setId(user.getId());
+            simpleUserDTO.setUserName(user.getUsername());
+            return simpleUserDTO;
+        }).collect(Collectors.toList());
     }
 
 }

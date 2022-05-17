@@ -9,6 +9,6 @@ import java.util.List;
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
     AppUser findByUsername(String username);
 
-    @Query(value = "SELECT * FROM app_user WHERE username = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM app_user WHERE username LIKE %?1%", nativeQuery = true)
     List<AppUser> findAllByName(String name);
 }
