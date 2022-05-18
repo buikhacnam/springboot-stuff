@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,20 +45,22 @@ public class ChatHistoryController {
     }
 
     @GetMapping("/seen")
-    public ResponseEntity<CommonResponse> seenMessage(@RequestParam(required = true) String senderName,
-                                                      @RequestParam(required = true) String receiverName) {
-        try{
-            Chat chat = messageService.seenMessage(senderName, receiverName);
-            return new ResponseEntity<>(
+    public ResponseEntity<CommonResponse> seenMessage(Principal principal, @RequestParam(required = true) String senderName) {
+
+        try {
+            String userName = principal.getName();
+            Chat chat = messageService.seenMessage(userName, senderName);
+                return new ResponseEntity<>(
                     new CommonResponse(
-                            "seen new message successfully",
-                            true,
-                            chat,
-                            HttpStatus.OK.value()
+                        "seen new message successfully",
+                        true,
+                        chat,
+                        HttpStatus.OK.value()
                     ),
                     HttpStatus.OK
-            );
-        } catch(Exception e) {
+                );
+
+        } catch (Exception e) {
             return new ResponseEntity<>(
                     new CommonResponse(
                             e.getMessage(),
@@ -71,8 +74,7 @@ public class ChatHistoryController {
     }
 
     @GetMapping("/private")
-    public ResponseEntity<CommonResponse> searchPrivateMessage(
-            @RequestParam(required = true) String senderName,
+    public ResponseEntity<CommonResponse> searchPrivateMessage(Principal principal,
             @RequestParam(required = true) String receiverName,
             @RequestParam(required = false) String message,
             @RequestParam(required = false) String fromDate,
@@ -81,7 +83,8 @@ public class ChatHistoryController {
             @RequestParam(required = false) String pageNumber
     ) {
         try{
-            LazyLoadDTO messages = messageService.searchMessage(senderName, receiverName, message, fromDate, toDate, pageSize, pageNumber);
+            String userName = principal.getName();
+            LazyLoadDTO messages = messageService.searchMessage(userName, receiverName, message, fromDate, toDate, pageSize, pageNumber);
             return new ResponseEntity<>(
                     new CommonResponse(
                             "search private message successfully",
@@ -105,12 +108,11 @@ public class ChatHistoryController {
 
     }
 
-    @GetMapping("/conversation/{senderName}")
-    public ResponseEntity<CommonResponse> searchConversations(
-            @PathVariable(name = "senderName") String senderName
-    ) {
+    @GetMapping("/conversation")
+    public ResponseEntity<CommonResponse> searchConversations(Principal principal) {
         try{
-            List<ConversationDTO> conversations = messageService.searchConversations(senderName);
+            String userName = principal.getName();
+            List<ConversationDTO> conversations = messageService.searchConversations(userName);
             return new ResponseEntity<>(
                     new CommonResponse(
                             "search conversations successfully",
