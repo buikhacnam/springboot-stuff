@@ -26,13 +26,21 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("/api/v1/security/login") || request.getServletPath().equals("/api/v1/security/refresh")  || request.getServletPath().equals("/api/v1/security/user/save") || request.getServletPath().equals("/api/v1/security/test") || request.getServletPath().equals("/ws")){
+        if(request.getServletPath().equals("/api/v1/security/login") || request.getServletPath().equals("/api/v1/security/refresh")  || request.getServletPath().equals("/api/v1/security/user/save") || request.getServletPath().equals("/api/v1/security/test")){
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
-            if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String queryString = request.getParameter("tokenWS");
+
+            if((authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) || (queryString != null && request.getServletPath().contains("/ws/"))){
                 try {
-                    String token = authorizationHeader.substring("Bearer ".length());
+                    String token = null;
+                    if(queryString!= null) {
+                        token = queryString;
+                    } else {
+                        token = authorizationHeader.substring("Bearer ".length());
+                    }
+
                     // if the token is valid, it will pass the decodeJWT verification below and return a decodedJWT object
                     DecodedJWT decodedJWT = JwtUtils.verifyToken(token);
 

@@ -13,6 +13,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,21 +34,25 @@ public class ChatController {
     @MessageMapping("/message") //destination for sending to all /app/message
     //for those subscribing to /chatroom/public
     @SendTo("/chatroom/public")
-    public MessageDTO receiveMessage(@Payload MessageDTO messagePayload){
+    public MessageDTO receiveMessage(@Payload MessageDTO messagePayload, Principal principal) {
         System.out.println(messagePayload.toString());
         String status = String.valueOf(messagePayload.getStatus());
         if (Objects.equals(status, "JOIN")) {
-            System.out.println(messagePayload.getSenderName()+ " joined the chat");
+            System.out.println(principal.getName()+ " joined the chat");
             System.out.println("now we can do some chat db clean up");
         }
         return messagePayload;
     }
 
     @MessageMapping("/private-message") //destination for sending to specific user: /app/private-message
-    public void recMessage(@Payload MessageDTO messagePayload){
+    public void recMessage(@Payload MessageDTO messagePayload, Principal principal){
+
+        if(!principal.getName().equals(messagePayload.getSenderName())){
+            throw new RuntimeException("You are not allowed to send message to other users");
+        }
 
         //check if the chat between the two users is already exists
-        Optional<Chat> messageOptional = Optional.ofNullable(chatRepository.findExistedChat(messagePayload.getSenderName(), messagePayload.getReceiverName()));
+        Optional<Chat> messageOptional = Optional.ofNullable(chatRepository.findExistedChat(principal.getName(), messagePayload.getReceiverName()));
 
         System.out.println("messageOptionalllllllllllllllll: " + messageOptional);
 
@@ -61,20 +66,17 @@ public class ChatController {
          //if not exists, create a new chat
         if(!messageOptional.isPresent()) {
             Chat savedChat = new Chat();
-            savedChat.setUserOne(messagePayload.getSenderName());
+            savedChat.setUserOne(principal.getName());
             savedChat.setUserTwo(messagePayload.getReceiverName());
             savedChat.setUnReadOne(1L);
             savedChat.setUnReadTwo(0L);
 
-            System.out.println("savedMessage: " + savedChat.toString());
             Chat chatSaved = chatRepository.save(savedChat);
 
-            System.out.println("chatSaved" + chatSaved);
             newMessage.setChatId(chatSaved.getId());
 
             Message message = messageRepository.save(newMessage);
 
-            System.out.println("message is saved" + message.toString());
         }
 
 //        //if exists, push the new message to the chat
@@ -86,7 +88,7 @@ public class ChatController {
             if(messagePayload.getReceiverName().equals(savedChat.getUserTwo())) {
                 savedChat.setUnReadOne(savedChat.getUnReadOne() + 1);
             }
-            System.out.println("CHAT DOES EXISTS");
+
             chatRepository.save(savedChat);
             newMessage.setChatId(messageOptional.get().getId());
             messageRepository.save(newMessage);
