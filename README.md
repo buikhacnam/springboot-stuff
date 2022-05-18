@@ -4,6 +4,6 @@
   ## https://chat-to-me.vercel.app/
   ## https://i-calender.vercel.app/
   
-# Related front-end project:
+# Related front-end project repositories:
   ## https://github.com/buikhacnam/messenger-vercel
   ## https://github.com/buikhacnam/vercel-calendar
