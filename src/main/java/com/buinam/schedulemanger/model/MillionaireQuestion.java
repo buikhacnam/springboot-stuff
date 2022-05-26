@@ -19,7 +19,7 @@ public class MillionaireQuestion {
     private Long id;
     private String content;
     private String correctAnswer;
-    private Integer point;
+    private int point;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "millionaireQuestions")
@@ -49,11 +49,11 @@ public class MillionaireQuestion {
         this.correctAnswer = correctAnswer;
     }
 
-    public Integer getPoint() {
+    public int getPoint() {
         return point;
     }
 
-    public void setPoint(Integer point) {
+    public void setPoint(int point) {
         this.point = point;
     }
 
