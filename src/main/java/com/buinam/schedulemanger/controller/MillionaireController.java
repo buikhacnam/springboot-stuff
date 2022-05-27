@@ -108,37 +108,83 @@ public class MillionaireController {
             );
         }
     }
+
+    @DeleteMapping("/group/delete/{groupId}")
+    public ResponseEntity<CommonResponse> deleteGroup(@PathVariable(name="groupId") Long groupId) {
+        try {
+            millionaireService.deleteGroup(groupId);
+            return new ResponseEntity<>(
+                new CommonResponse(
+                    "Delete millionaire group successfully",
+                    true,
+                    null,
+                    HttpStatus.OK.value()
+                ),
+                HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                new CommonResponse(
+                    "Delete millionaire group failed",
+                    false,
+                    null,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()
+                ),
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @PostMapping("/group/delete-question/{groupId}")
+    public ResponseEntity<CommonResponse> deleteQuestionFromGroup(@PathVariable(name="groupId") Long groupId, @RequestBody MillionaireQuestionListDTO questionListDTO) {
+        try {
+            MillionaireGroup savedGroup = millionaireService.deleteQuestion(groupId, questionListDTO);
+            return new ResponseEntity<>(
+                new CommonResponse(
+                    "Delete question successfully",
+                    true,
+                    savedGroup,
+                    HttpStatus.OK.value()
+                ),
+                HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                new CommonResponse(
+                    "Delete question failed",
+                    false,
+                    null,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()
+                ),
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @DeleteMapping("/question/delete/{questionId}")
+    public ResponseEntity<CommonResponse> deleteQuestion(@PathVariable(name="questionId") Long questionId) {
+        try {
+            millionaireService.deleteQuestion(questionId);
+            return new ResponseEntity<>(
+                new CommonResponse(
+                    "Delete question successfully",
+                    true,
+                    null,
+                    HttpStatus.OK.value()
+                ),
+                HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                new CommonResponse(
+                    "Delete question failed",
+                    false,
+                    null,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()
+                ),
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }
 
-/*
-            "id": 4,
-            "content": "Đi đâu không?",
-            "rightAnswer": "C",
-            "point": 100,
-            "answers": [
-                {
-                    "id": 13,
-                    "questionId": 4,
-                    "name": "A",
-                    "content": "Không"
-                },
-                {
-                    "id": 14,
-                    "questionId": 4,
-                    "name": "B",
-                    "content": "Có"
-                },
-                {
-                    "id": 15,
-                    "questionId": 4,
-                    "name": "C",
-                    "content": "Chắc là có"
-                },
-                {
-                    "id": 16,
-                    "questionId": 4,
-                    "name": "D",
-                    "content": "Chắc là không"
-                }
-            ],
- */

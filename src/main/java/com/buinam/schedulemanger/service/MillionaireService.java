@@ -17,4 +17,10 @@ public interface MillionaireService {
     MillionaireGroup addQuestion(Long groupId, MillionaireQuestionListDTO questionListDTO);
 
     List<QuestionInGroupDTO> getQuestionsFromGroupId(Long groupId);
+
+    void deleteGroup(Long groupId);
+
+    MillionaireGroup deleteQuestion(Long groupId, MillionaireQuestionListDTO questionId);
+
+    void deleteQuestion(Long questionId);
 }

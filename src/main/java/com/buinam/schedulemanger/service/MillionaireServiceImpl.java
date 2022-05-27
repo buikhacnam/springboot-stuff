@@ -116,6 +116,45 @@ public class MillionaireServiceImpl implements MillionaireService{
         return null;
     }
 
+    @Override
+    public void deleteGroup(Long groupId) {
+        Optional<MillionaireGroup> optionalMillionaireGroup = millionaireGroupRepository.findById(groupId);
+        if(optionalMillionaireGroup.isPresent()){
+            MillionaireGroup millionaireGroup = optionalMillionaireGroup.get();
+            millionaireGroup.setMillionaireQuestions(null);
+            millionaireGroupRepository.deleteById(groupId);
+        }
+    }
+
+    @Override
+    public MillionaireGroup deleteQuestion(Long groupId, MillionaireQuestionListDTO questionId) {
+        Optional<MillionaireGroup> optionalMillionaireGroup = millionaireGroupRepository.findById(groupId);
+        if(optionalMillionaireGroup.isPresent()){
+            MillionaireGroup millionaireGroup = optionalMillionaireGroup.get();
+            for (Long question : questionId.getQuestionList()) {
+                millionaireGroup.getMillionaireQuestions().removeIf(millionaireQuestion -> millionaireQuestion.getId().equals(question));
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteQuestion(Long questionId) {
+        Optional<MillionaireQuestion> optionalMillionaireQuestion = millionaireQuestionRepository.findById(questionId);
+        if(optionalMillionaireQuestion.isPresent()){
+            // find the question in any group and delete it
+            List<MillionaireGroup> millionaireGroups = millionaireGroupRepository.findAll();
+            for (MillionaireGroup millionaireGroup : millionaireGroups) {
+                millionaireGroup.getMillionaireQuestions().removeIf(millionaireQuestion -> millionaireQuestion.getId().equals(questionId));
+            }
+
+
+//            MillionaireQuestion millionaireQuestion = optionalMillionaireQuestion.get();
+            millionaireAnswerRepository.deleteAllByQuestionId(questionId);
+            millionaireQuestionRepository.deleteById(questionId);
+        }
+    }
+
     private void saveAnswer(String answer, Long questionId, String name) {
         MillionaireAnswer millionaireAnswer = new MillionaireAnswer();
         millionaireAnswer.setContent(answer);
