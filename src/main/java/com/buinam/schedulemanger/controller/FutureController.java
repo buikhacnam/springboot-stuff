@@ -83,4 +83,11 @@ public class FutureController {
         */
 
     }
+
+    @PostMapping("/2")
+    public void post2() {
+        System.out.println("FutureController.post()2");
+        futureService.testFuture();
+        System.out.println("FutureController.post()2 end");
+    }
 }
