@@ -1,5 +1,6 @@
 package com.buinam.schedulemanger.controller;
 
+import com.buinam.schedulemanger.dto.FcmSubscribeDTO;
 import com.buinam.schedulemanger.model.UserDevice;
 import com.buinam.schedulemanger.service.UserDeviceService;
 import com.buinam.schedulemanger.utils.CommonResponse;
@@ -36,6 +37,32 @@ public class UserDeviceController {
             return new ResponseEntity<>(
                 new CommonResponse(
                     "Save user device failed",
+                    false,
+                    null,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()
+                ),
+                HttpStatus.INTERNAL_SERVER_ERROR)
+            ;
+        }
+    }
+
+    @PostMapping("/subscribe")
+    public ResponseEntity<CommonResponse> subscribe(@RequestBody FcmSubscribeDTO fcmSubscribeDTO) {
+        try {
+            userDeviceService.subscribe(fcmSubscribeDTO);
+            return new ResponseEntity<>(
+                new CommonResponse(
+                    "Subscribe successfully",
+                    true,
+                        null,
+                    HttpStatus.OK.value()
+                ),
+                HttpStatus.OK)
+            ;
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                new CommonResponse(
+                    "Subscribe failed",
                     false,
                     null,
                     HttpStatus.INTERNAL_SERVER_ERROR.value()
