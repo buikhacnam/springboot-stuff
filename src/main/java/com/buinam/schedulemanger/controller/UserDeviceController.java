@@ -24,6 +24,14 @@ public class UserDeviceController {
     public ResponseEntity<CommonResponse> saveUserDevice(@RequestBody UserDevice userDevice) {
         try {
             UserDevice saved = userDeviceService.saveUserDevice(userDevice);
+            String deviceType = saved.getDeviceType();
+            if (deviceType.equals("web")) {
+                //subscribe user to topic all, since web is not support FCM topic subscription
+                FcmSubscribeDTO fcmSubscribeDTO = new FcmSubscribeDTO();
+                fcmSubscribeDTO.setTopic("all");
+                fcmSubscribeDTO.setFcmToken(saved.getFcmToken());
+                userDeviceService.subscribe(fcmSubscribeDTO);
+            }
             return new ResponseEntity<>(
                 new CommonResponse(
                     "Save user device successfully",
