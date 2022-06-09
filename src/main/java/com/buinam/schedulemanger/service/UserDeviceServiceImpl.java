@@ -28,7 +28,6 @@ public class UserDeviceServiceImpl implements UserDeviceService {
     public UserDevice saveUserDevice(UserDevice userDevice) {
         UserDevice userGadget = userDeviceRepository.findByUserNameAndDeviceType(userDevice.getUserName(), userDevice.getDeviceType());
 
-        System.out.println("userGadget: " + userGadget);
         if (userGadget == null) {
             return userDeviceRepository.save(userDevice);
         } else {
@@ -51,10 +50,10 @@ public class UserDeviceServiceImpl implements UserDeviceService {
 
         String firebaseRes = restTemplate.postForObject(url, null, String.class);
         System.out.println("firebaseRes: " + firebaseRes);
-
     }
 }
 /*
+In node.js
 function subscribeTokenToTopic(token, topic) {
   fetch('https://iid.googleapis.com/iid/v1/'+token+'/rel/topics/'+topic, {
     method: 'POST',
