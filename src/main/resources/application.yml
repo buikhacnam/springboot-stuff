@@ -22,3 +22,7 @@ spring:
         file-size-threshold: 2KB
 welcome:
   message: Welcome to the server!
+firebase:
+  fcm:
+    url: https://fcm.googleapis.com/fcm/send
+    serverkey: AAAAgDcCtFo:APA91bG5A9P6ifj_HdBUYeESI7Xb_HyufXrKXK786SIIWZpudqba-Pb8fhDECT0i7YTrmy1zmsZraXsFpt3bw50FJTYWUNR8QA4jWuSVzqXGWa1arKCmA0kcsc7dQl7_jIJxXZ2k_Rkp
