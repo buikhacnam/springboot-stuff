@@ -5,8 +5,7 @@ import com.buinam.schedulemanger.model.Schedule;
 
 import com.buinam.schedulemanger.model.Student;
 import com.buinam.schedulemanger.model.Teacher;
-import com.buinam.schedulemanger.sandbox.Car;
-import com.buinam.schedulemanger.sandbox.Motorbike;
+
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
@@ -18,6 +17,4 @@ public interface GenerateMapper {
     StudentDTO mapStudentFromEntity (Student student);
     TeacherDTO mapTeacherFromEntity (Teacher teacher);
 
-    Motorbike mapMotorbikeFromCar (Car car);
-    Car mapCarFromMotorbike (Motorbike motorbike);
 }
