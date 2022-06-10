@@ -50,7 +50,7 @@ public class PushNotificationController {
     }
 
     @PostMapping ("/send")
-    public ResponseEntity<CommonResponse> sendMessageFirebase(@RequestBody SendNotificationDTO sendNotificationDTO) {
+    public ResponseEntity<CommonResponse> sendIndividualMessageFirebase(@RequestBody SendNotificationDTO sendNotificationDTO) {
         try {
             System.out.println("Start push notification " + sendNotificationDTO);
             String result = pushNotificationService.sendMessageFirebase(sendNotificationDTO);
@@ -74,6 +74,41 @@ public class PushNotificationController {
                 ),
                 HttpStatus.INTERNAL_SERVER_ERROR)
             ;
+        }
+    }
+
+
+    @GetMapping ("/send/to/{userName}")
+    public ResponseEntity<CommonResponse> sendDefaultIndividualMessageFirebase(@PathVariable(name = "userName") String userName) {
+        try {
+            System.out.println("Start push notification");
+            SendNotificationDTO sendNotificationDTO = new SendNotificationDTO();
+            sendNotificationDTO.setTo(userName);
+            sendNotificationDTO.setTitle("Notification To " + userName);
+            sendNotificationDTO.setContent("Have a nice day, " + userName);
+            sendNotificationDTO.setData("{keyOne: 1, keyTwo: 2}");
+            System.out.println("Start send message " + sendNotificationDTO);
+            String result = pushNotificationService.sendMessageFirebase(sendNotificationDTO);
+            System.out.println("Done send message");
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            "Push notification successfully",
+                            true,
+                            result,
+                            HttpStatus.OK.value()
+                    ),
+                    HttpStatus.OK)
+                    ;
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    new CommonResponse(
+                            "Send notification failed",
+                            false,
+                            e.getMessage(),
+                            HttpStatus.INTERNAL_SERVER_ERROR.value()
+                    ),
+                    HttpStatus.INTERNAL_SERVER_ERROR)
+                    ;
         }
     }
 
