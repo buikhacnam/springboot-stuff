@@ -85,7 +85,8 @@ There is no direct API to send push notification to all users using web browser.
 
 So we need a way to work around:
 
-After user log in, we can check if the device is "web", we will subscribe that device token to a topic by run this:
+After user log in, we can check if the device is "web", we will subscribe that device token to a topic by run this (check UserDeviceServiceImpl.java for details)
+:
 
 ```
 public void subscribe(FcmSubscribeDTO fcmSubscribeDTO) {
