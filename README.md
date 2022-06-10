@@ -10,20 +10,24 @@
 
 ## [Excel Importer / Exporter](#)
 
-
 # Pro Messenger
+
 Documentation is in progress...
+
 # Ultimate Calendar
+
 Documentation is in progress...
+
 # Firebase Push Notification Tester
 
 ## Push notitication to specific user
 
 The purpose of this service is to test the push notification feature of Firebase.
 
-Our goal is to make a request to the Firebase server with a Cloud Messaging server key and a proper boder payload with ${firebase.fcm.token}is the device token sending from client.
+Our goal is to make a request to the Firebase server with a Cloud Messaging server key and a proper boder payload with \${firebase.fcm.token}is the device token sending from client.
 
-The request will look like this: 
+The request will look like this:
+
 ```
 Host: fcm.googleapis.com
 Authorization: key=${firebase.fcm.serverkey}"
@@ -32,12 +36,12 @@ Content-Length: 251
 
 {
 		   "notification": {
-		      "title": "JSA Notification",
-		      "body": "Happy Message!"
+		      "title": "New Notification",
+		      "body": "Hi there!"
 		   },
 		   "data": {
-		      "Key-1": "JSA Data 1",
-		      "Key-2": "JSA Data 2"
+		      "Key-1": "one",
+		      "Key-2": "two"
 		   },
 		   "to": "${firebase.fcm.token}",
 		   "priority": "high"
@@ -106,6 +110,29 @@ Host: iid.googleapis.com
 Authorization: key=${firebase.fcm.serverkey}
 ```
 
+So then we can send a nonification to all users who subscribe to a topic named 'all' for example:
+
+```
+Host: fcm.googleapis.com
+Authorization: key=${firebase.fcm.serverkey}"
+Content-Type: application/json
+Content-Length: 251
+
+{
+		   "notification": {
+		      "title": "Notification To All",
+		      "body": "Hello everyone!"
+		   },
+		   "data": {
+		      "Key-1": "one",
+		      "Key-2": "two"
+		   },
+		   "to": "/topics/all",
+		   "priority": "high"
+		}
+
+```
 
 # Excel Importer / Exporter
+
 Documentation is in progress...
