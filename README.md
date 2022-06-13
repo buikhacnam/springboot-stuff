@@ -2,11 +2,11 @@
 
 # This service powers some public projects including:
 
-## <a href="#pro-messenger">Pro messenger</a>
+## <a href="#pro-messenger-1">Pro messenger</a>
 
-## <a href="#ultimate-calendar">Ultimate Calendar</a>
+## <a href="#ultimate-calendar-1">Ultimate Calendar</a>
 
-## <a href="#firebase-push-notification-tester">Firebase Push Notification Tester</a>
+## <a href="#firebase-push-notification-tester-1">Firebase Push Notification Tester</a>
 
 ## <a href="#excel-data-importer-and-exporter">Excel Data Importer / Exporter</a>
 
