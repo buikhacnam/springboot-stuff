@@ -2,23 +2,95 @@
 
 # This service powers some public projects including:
 
-## [Pro Messenger](https://chat-to-me.vercel.app/)
+## <a href="#pro-messenger">Pro messenger</a>
 
-## [Ultimate Calendar](https://i-calender.vercel.app/)
+## <a href="#ultimate-calendar">Ultimate Calendar</a>
 
-## [Firebase Push Notification Tester](https://fcm-topic.vercel.app/)
+## <a href="#firebase-push-notification-tester">Firebase Push Notification Tester</a>
 
-## [Excel Importer / Exporter](#)
+## <a href="#excel-data-importer-and-exporter">Excel Data Importer / Exporter</a>
 
 # Pro Messenger
 
-Documentation is in progress...
+## Live app: https://chat-to-me.vercel.app/
+
+First, we set up the WebsocketConfig:
+
+```
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
+    @Autowired
+    private HttpHandshakeInterceptor handshakeInterceptor;
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        System.out.println("registerStompEndpoints");
+        registry.addEndpoint("/ws").addInterceptors(new HttpHandshakeInterceptor()).setAllowedOriginPatterns("*").withSockJS();
+    }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker("/chatroom", "/user");
+        registry.setApplicationDestinationPrefixes("/app");
+//        /user/{username}/private
+        registry.setUserDestinationPrefix("/user");
+    }
+
+}
+
+```
+
+Users can connect to the server with the following URL:
+
+```
+domainname/ws?tokenWS=${accessToken}
+```
+
+Define routes for sending, receiving message in ChatController.java
+
+```
+@MessageMapping("/message") //destination for sending to all /app/message
+    //for those subscribing to /chatroom/public
+    @SendTo("/chatroom/public")
+    public MessageDTO receiveMessage(@Payload MessageDTO messagePayload, Principal principal) {
+        System.out.println(messagePayload.toString());
+
+        return messagePayload;
+    }
+
+    @MessageMapping("/private-message") //destination for sending to specific user: /app/private-message
+    public void recMessage(@Payload MessageDTO messagePayload, Principal principal){
+
+        if(!principal.getName().equals(messagePayload.getSenderName())){
+            throw new RuntimeException("You are not allowed to send message to other users");
+        }
+
+        // for those subscribing to /user/{username}/private
+        simpMessagingTemplate.convertAndSendToUser(messagePayload.getReceiverName(),"/private",messagePayload);
+
+        System.out.println(messagePayload.toString());
+    }
+```
+
+## On the client side:
+
+-   Sending a public message: stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
+-   Sending a private message: stompClient.send("/app/private-message", {}, JSON.stringify(chatMessage));
+-   Receiving a public message: stompClient.subscribe("/chatroom/public", function(message) {
+    console.log(message);
+    });
+-   Receiving a private message: stompClient.subscribe("/user/{username}/private", function(message) {
+    console.log(message);
+    });
 
 # Ultimate Calendar
 
-Documentation is in progress...
+## Live app: https://i-calender.vercel.app/
 
 # Firebase Push Notification Tester
+
+## Live app: https://fcm-topic.vercel.app/
 
 ## Push notitication to specific user
 
@@ -134,6 +206,6 @@ Content-Length: 251
 
 ```
 
-# Excel Importer / Exporter
+# Excel Data Importer And Exporter
 
 Documentation is in progress...
