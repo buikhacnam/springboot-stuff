@@ -88,6 +88,104 @@ Define routes for sending, receiving message in ChatController.java
 
 ## Live app: https://i-calender.vercel.app/
 
+In this project, we use javax.persistence.EntityManager to natively query the database for multiple filtering and sorting purposes.
+Please check the file ScheduleController and ScheduleService.java for more details.
+
+```
+  private LazyLoadDTO executeSearchScheduleByCondition(String pageSize, String pageNumber, String name, LocalDateTime fromDate, LocalDateTime toDate, String description, String location, String textSearch, String orderBy, String orderType, boolean isCount) {
+        
+        LazyLoadDTO lazyLoadDTO = new LazyLoadDTO();
+        List<Object> listParam = new ArrayList<>();
+        StringBuilder strQuery = new StringBuilder();
+
+
+        if(isCount) {
+            strQuery.append("SELECT COUNT(*) FROM schedule s WHERE 1=1 ");
+        } else {
+            strQuery.append("SELECT * FROM schedule s WHERE 1=1 ");
+        } 
+
+        if(!Strings.isNullOrEmpty(name)) {
+            strQuery.append(" AND name LIKE ? ");
+            listParam.add("%" + name + "%");
+        }
+
+        if(fromDate != null) {
+            strQuery.append(" AND create_date_time >= ? ");
+            listParam.add(fromDate);
+        }
+
+        if(toDate != null) {
+            strQuery.append(" AND create_date_time <= ? ");
+            listParam.add(toDate);
+        }
+
+        if(!Strings.isNullOrEmpty(description)) {
+            strQuery.append(" AND description LIKE ? ");
+            listParam.add("%" + description + "%");
+        }
+
+        if(!Strings.isNullOrEmpty(location)) {
+            strQuery.append(" AND location LIKE ? ");
+            listParam.add("%" + location + "%");
+        }
+
+        if (!Strings.isNullOrEmpty(textSearch)) {
+            strQuery.append(" AND ( s.name LIKE ? OR s.description LIKE ? OR s.location LIKE ? ) ");
+            listParam.add("%" + textSearch.trim().toLowerCase() + "%");
+            listParam.add("%" + textSearch.trim().toLowerCase() + "%");
+            listParam.add("%" + textSearch.trim().toLowerCase() + "%");
+        }
+        if (Strings.isNullOrEmpty(orderBy)) {
+            // if there is no orderBy, then order by start_date
+            strQuery.append(" ORDER BY s.update_date_time DESC ");
+        } else {
+            if (!Strings.isNullOrEmpty(orderType)) {
+                // there is orderType, then order by orderBy and orderType
+                strQuery.append(" ORDER BY ".concat("s.".concat(orderBy)).concat(" ").concat(orderType));
+            } else {
+                // there is no orderType, then order by orderBy only
+                strQuery.append(" ORDER BY ".concat("s.".concat(orderBy)));
+            }
+        }
+        
+        Query query = null;
+
+        if (isCount) {
+            query = em.createNativeQuery(strQuery.toString());
+        } else {
+            query = em.createNativeQuery(strQuery.toString(), Schedule.class);
+        }
+
+        for(int i = 0; i < listParam.size(); i++) {
+            query.setParameter(i + 1, listParam.get(i));
+        }
+
+
+        if (isCount) {
+            BigDecimal count = new BigDecimal((BigInteger) query.getSingleResult());
+            lazyLoadDTO.setCount(count);
+        } else {
+            if(!Strings.isNullOrEmpty(pageSize) && !Strings.isNullOrEmpty(pageNumber)) {
+                int page = Integer.parseInt(pageNumber);
+                int size = Integer.parseInt(pageSize);
+                Pageable pageable = PageRequest.of(page, size);
+    
+                if(pageable.getPageNumber() - 1 < 0) {
+                    query.setFirstResult(0);
+                } else {
+                    query.setFirstResult((pageable.getPageNumber() - 1) * pageable.getPageSize());
+                }
+                query.setMaxResults(pageable.getPageSize());
+                lazyLoadDTO.setListObject(query.getResultList());
+            }
+        }
+
+        return lazyLoadDTO;
+    }
+
+```
+
 # Firebase Push Notification Tester
 
 ## Live app: https://fcm-topic.vercel.app/
