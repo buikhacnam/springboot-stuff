@@ -391,3 +391,11 @@ Then you can query them like this:
         return query.getResultList();
     }
 ```
+
+## Import / export data from excel file to / from database
+
+We're gonna use org.apache.poi for this.
+
+Example exel file: https://docs.google.com/spreadsheets/d/176k61Sevo23G04-gw_xTaz-k1bksD9R0/edit?usp=sharing&ouid=101348996556543503772&rtpof=true&sd=true
+
+Check implementation of PlayerController.java for details.

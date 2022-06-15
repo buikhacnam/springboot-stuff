@@ -53,15 +53,17 @@ public class PlayerController {
                 String club = worksheet.getRow(i).getCell(1).getStringCellValue();
                 int shirtNumber = (int) worksheet.getRow(i).getCell(2).getNumericCellValue();
 
-                if (!names.contains(name) && !clubs.contains(club)) {
+                if (!names.contains(name) || !clubs.contains(club)) {
                     Player player = new Player();
                     player.setPlayerName(name);
                     player.setClub(club);
                     player.setShirtNumber(shirtNumber);
+                    players.add(player);
                 }
-
             }
         }
+
+        System.out.println("players: " + players.toString());
 
         //save player data to database
         playerRepository.saveAll(players);
