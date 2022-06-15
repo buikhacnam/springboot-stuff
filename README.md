@@ -8,7 +8,7 @@
 
 ## <a href="#firebase-push-notification-tester-1">Firebase Push Notification Tester</a>
 
-## <a href="#excel-data-importer-and-exporter">Excel Data Importer / Exporter</a>
+## <a href="#common-techniques-and-tools">Some Other Tools</a>
 
 # Pro Messenger
 
@@ -304,6 +304,90 @@ Content-Length: 251
 
 ```
 
-# Excel Data Importer And Exporter
+# Common techniques and tools
 
-Documentation is in progress...
+## Using EntityManager to query database
+Check file StudentController.java and Student.java for details.
+
+In student Entity:
+
+```
+@NamedNativeQuery(name = "getAllEnrolledStudent",
+        query = "SELECT * FROM student_enrolled",
+        resultSetMapping = "student_enrolled_kkk"
+)
+@SqlResultSetMappings({
+        @SqlResultSetMapping(
+                name = "student_enrolled_kkk",
+                classes = {
+                        @ConstructorResult(
+                                targetClass = StudentEnrolledDTO.class,
+                                columns = {
+                                        @ColumnResult(name = "subject_id", type = Long.class),
+                                        @ColumnResult(name = "student_id", type = Long.class)
+                                })
+                }
+        )
+})
+public class Student {
+....
+}
+```
+
+Then you the StudentController.java file:
+
+```
+            Query query = em.createNativeQuery("SELECT * FROM student_enrolled s WHERE s.student_id = ?", "student_enrolled_kkk");
+
+```
+
+Or you can set up the a BaseResultSet file and target all the tables you want to query:
+
+```
+@Entity
+
+@SqlResultSetMappings({
+        @SqlResultSetMapping(
+                name = "get_result_one",
+                classes = {
+                        @ConstructorResult(
+                                targetClass = ResultsetDemoOne.class,
+                                columns = {
+                                        @ColumnResult(name = "id", type = Long.class),
+                                        @ColumnResult(name = "name", type = String.class)
+                                })
+                }
+        ),
+        @SqlResultSetMapping(
+                name = "get_result_two",
+                classes = {
+                        @ConstructorResult(
+                                targetClass = ResultsetDemoTwo.class,
+                                columns = {
+                                        @ColumnResult(name = "id", type = Long.class),
+                                        @ColumnResult(name = "title", type = String.class)
+                                })
+                }
+        )
+})
+public class BaseResultSet {
+    @Id
+    private Long id;
+}
+```
+
+Then you can query them like this:
+```
+    @GetMapping("/result-one")
+    List<Object> getSomeData() {
+        Query query = em.createNativeQuery("SELECT * FROM result_set_demo_one", "get_result_one");
+        return query.getResultList();
+    }
+
+
+    @GetMapping("/result-two")
+    List<Object> getSomeData2() {
+        Query query = em.createNativeQuery("SELECT * FROM result_set_demo_two", "get_result_two");
+        return query.getResultList();
+    }
+```
