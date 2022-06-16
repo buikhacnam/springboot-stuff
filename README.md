@@ -8,6 +8,8 @@
 
 ## <a href="#firebase-push-notification-tester-1">Firebase Push Notification Tester</a>
 
+## <a href="#spring-security-and-jwt-1">Spring Security And JWT</a>
+
 ## <a href="#common-techniques-and-tools">Some Other Tools</a>
 
 # Pro Messenger
@@ -304,6 +306,12 @@ Content-Length: 251
 
 ```
 
+# Spring Security and JWT
+
+I implemented JWT authentication and authorization in this project:
+
+https://github.com/buikhacnam/security-jwt-in-action
+
 # Common techniques and tools
 
 ## Using EntityManager to query database
@@ -399,3 +407,13 @@ We're gonna use org.apache.poi for this.
 Example exel file: https://docs.google.com/spreadsheets/d/176k61Sevo23G04-gw_xTaz-k1bksD9R0/edit?usp=sharing&ouid=101348996556543503772&rtpof=true&sd=true
 
 Check implementation of PlayerController.java for details.
+
+## @ManyToMany, @OneToMany relationship in JPA
+
+We demo these relationships in Student.java, Subject.java and Teacher.java
+
+Student and Subject are @ManyToMany relationship, that means one student can enroll to many subjects and one subject can be enrolled by many students.
+
+Teacher and Subject are @OneToMany relationship, that means one teacher can teach many subjects and one subject is only taught by one teacher.
+
+Check implementation of StudentController.java, SubjectController, TeacherController for details.
