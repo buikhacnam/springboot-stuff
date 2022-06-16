@@ -1,5 +1,6 @@
 # Common Services And Tools
-
+This repository is a collection of common services and tools that I use in my daily work.
+I think it's nice to have all of them in one place, so that I can easily share / find them when needed.
 # This service powers some public projects including:
 
 ## <a href="#pro-messenger-1">Pro messenger</a>
