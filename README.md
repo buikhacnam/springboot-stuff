@@ -3,15 +3,23 @@ This repository is a collection of common services and tools that I use in my da
 I think it's nice to have all of them in one place, so that I can easily share / find them when needed.
 # This service powers some public projects including:
 
+## <a href="#spring-security-and-jwt-1">Spring Security And JWT</a>
+
 ## <a href="#pro-messenger-1">Pro messenger</a>
 
 ## <a href="#ultimate-calendar-1">Ultimate Calendar</a>
 
 ## <a href="#firebase-push-notification-tester-1">Firebase Push Notification Tester</a>
 
-## <a href="#spring-security-and-jwt-1">Spring Security And JWT</a>
-
 ## <a href="#common-techniques-and-tools">Some Other Tools</a>
+
+
+# Spring Security and JWT
+
+Please check this repository:
+
+https://github.com/buikhacnam/security-jwt-in-action
+
 
 # Pro Messenger
 
@@ -306,12 +314,6 @@ Content-Length: 251
 		}
 
 ```
-
-# Spring Security and JWT
-
-I implemented JWT authentication and authorization in this project:
-
-https://github.com/buikhacnam/security-jwt-in-action
 
 # Common techniques and tools
 
