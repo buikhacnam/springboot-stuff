@@ -5,6 +5,8 @@ I think it's nice to have all of them in one place, so that I can easily share /
 
 ## <a href="#spring-security-and-jwt-1">Spring Security And JWT</a>
 
+## <a href="#spring-security-and-LDAP-1">Spring Security And LDAP</a>
+
 ## <a href="#pro-messenger-1">Pro messenger</a>
 
 ## <a href="#ultimate-calendar-1">Ultimate Calendar</a>
@@ -19,6 +21,12 @@ I think it's nice to have all of them in one place, so that I can easily share /
 Please check this repository:
 
 https://github.com/buikhacnam/security-jwt-in-action
+
+# Spring Security and LDAP
+
+Please check this repository:
+
+https://github.com/buikhacnam/Spring-Security-LDAP
 
 
 # Pro Messenger
