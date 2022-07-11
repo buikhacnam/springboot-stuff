@@ -325,6 +325,12 @@ Content-Length: 251
 
 # Common techniques and tools
 
+
+## Calling external API using Resttemplate
+
+Please check the repository: https://github.com/buikhacnam/youtube-springboot-restemplate
+
+
 ## Using EntityManager to query database
 Check file StudentController.java and Student.java for details.
 
@@ -428,3 +434,4 @@ Student and Subject are @ManyToMany relationship, that means one student can enr
 Teacher and Subject are @OneToMany relationship, that means one teacher can teach many subjects and one subject is only taught by one teacher.
 
 Check implementation of StudentController.java, SubjectController, TeacherController for details.
+
