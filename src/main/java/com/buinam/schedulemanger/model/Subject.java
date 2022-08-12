@@ -35,6 +35,7 @@ public class Subject {
         joinColumns = @JoinColumn(name="subject_id"),
         inverseJoinColumns = @JoinColumn(name="student_id")
     )
+//    @JsonIgnore
     private Set<Student> enrolledStudents = new HashSet<>();
 
     //manyToOne we dont need a join table

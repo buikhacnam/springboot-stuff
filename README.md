@@ -413,7 +413,7 @@ Check implementation of PlayerController.java for details.
 
 We demo these relationships in Student.java, Subject.java and Teacher.java
 
-Student and Subject are @ManyToMany relationship, that means one student can enroll to many subjects and one subject can be enrolled by many students.
+Student and Subject are @ManyToMany relationship, that means one student can enroll to many subjects and one subject can be enrolled by many students. Note that we will need to add @JsonIgnore annotation to either Student.java or Subject.java to prevent infinite loop.
 
 Teacher and Subject are @OneToMany relationship, that means one teacher can teach many subjects and one subject is only taught by one teacher.
 

@@ -36,6 +36,12 @@ public class StudentController {
 
     }
 
+//    @GetMapping("/all2")
+//    List<Student> getAllStudents() {
+//        return studentRepository.findAll();
+//
+//    }
+
     @GetMapping("/all")
     List<StudentDTO> getStudentsWithSubjects() {
 
