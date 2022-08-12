@@ -1,7 +1,11 @@
 # Common Services And Tools
-This repository is a collection of common services and tools that I use in my daily work.
+This repository is the backend service for some of my personal projects and also a collection of common tools that I use in my daily work.
 I think it's nice to have all of them in one place, so that I can easily share / find them when needed.
 # This service powers some public projects including:
+
+## <a href="#spring-security-and-jwt-1">Spring Security And JWT</a>
+
+## <a href="#spring-security-and-LDAP-1">Spring Security And LDAP</a>
 
 ## <a href="#pro-messenger-1">Pro messenger</a>
 
@@ -9,9 +13,21 @@ I think it's nice to have all of them in one place, so that I can easily share /
 
 ## <a href="#firebase-push-notification-tester-1">Firebase Push Notification Tester</a>
 
-## <a href="#spring-security-and-jwt-1">Spring Security And JWT</a>
-
 ## <a href="#common-techniques-and-tools">Some Other Tools</a>
+
+
+# Spring Security and JWT
+
+Please check this repository:
+
+https://github.com/buikhacnam/security-jwt-in-action
+
+# Spring Security and LDAP
+
+Please check this repository:
+
+https://github.com/buikhacnam/Spring-Security-LDAP
+
 
 # Pro Messenger
 
@@ -307,13 +323,13 @@ Content-Length: 251
 
 ```
 
-# Spring Security and JWT
-
-I implemented JWT authentication and authorization in this project:
-
-https://github.com/buikhacnam/security-jwt-in-action
-
 # Common techniques and tools
+
+
+## Calling external API using Resttemplate
+
+Please check the repository: https://github.com/buikhacnam/youtube-springboot-restemplate
+
 
 ## Using EntityManager to query database
 Check file StudentController.java and Student.java for details.
@@ -418,3 +434,4 @@ Student and Subject are @ManyToMany relationship, that means one student can enr
 Teacher and Subject are @OneToMany relationship, that means one teacher can teach many subjects and one subject is only taught by one teacher.
 
 Check implementation of StudentController.java, SubjectController, TeacherController for details.
+
