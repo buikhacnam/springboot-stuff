@@ -8,6 +8,7 @@ import com.buinam.schedulemanger.model.Teacher;
 import com.buinam.schedulemanger.repository.SubjectRepository;
 import com.buinam.schedulemanger.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class TeacherController {
     private final SubjectRepository subjectRepository;
     private final GenerateMapper mapper;
 
-    @GetMapping
+    @GetMapping("/all1")
     List<Teacher> getTeachers() {
         return teacherRepository.findAll();
     }
@@ -36,7 +37,11 @@ public class TeacherController {
     List<TeacherDTO> getTeachersFull() {
         List<Teacher> teachers = teacherRepository.findAll();
         List<TeacherDTO> teacherDTO = teachers.stream().map(teacher -> {
-            return mapper.mapTeacherFromEntity(teacher);
+            System.out.println("TEACHER: "+teacher.getSubjects());
+//            return mapper.mapTeacherFromEntity(teacher);
+            TeacherDTO dto = new TeacherDTO();
+            BeanUtils.copyProperties(teacher, dto);
+            return dto;
         }).collect(Collectors.toList());
 
         return teacherDTO;
