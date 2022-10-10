@@ -11,7 +11,7 @@ I think it's nice to have all of them in one place, so that I can easily share /
 
 ## <a href="#ultimate-calendar-1">Ultimate Calendar</a>
 
-## <a href="#kafkar-1">Kafka</a>
+## <a href="#kafka-1">Kafka</a>
 
 ## <a href="#firebase-push-notification-tester-1">Firebase Push Notification Tester</a>
 
