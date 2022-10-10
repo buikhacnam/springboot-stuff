@@ -1,15 +1,17 @@
 # Common Services And Tools
 This repository is the backend service for some of my personal projects and also a collection of common tools that I use in my daily work.
 I think it's nice to have all of them in one place, so that I can easily share / find them when needed.
-# This service powers some public projects including:
+# This service powers some projects/tools including:
 
 ## <a href="#spring-security-and-jwt-1">Spring Security And JWT</a>
 
 ## <a href="#spring-security-and-LDAP-1">Spring Security And LDAP</a>
 
-## <a href="#pro-messenger-1">Pro messenger</a>
+## <a href="#pro-messenger-1">Websocket Pro messenger</a>
 
 ## <a href="#ultimate-calendar-1">Ultimate Calendar</a>
+
+## <a href="#kafkar-1">Kafka</a>
 
 ## <a href="#firebase-push-notification-tester-1">Firebase Push Notification Tester</a>
 
@@ -205,6 +207,10 @@ Please check the file ScheduleController and ScheduleService.java for more detai
 
 ```
 
+# Kafka
+
+Please check the repository: https://github.com/buikhacnam/kafka-demo
+
 # Firebase Push Notification Tester
 
 ## Live app: https://fcm-topic.vercel.app/
@@ -323,11 +329,16 @@ Content-Length: 251
 
 ```
 
+
 # Common techniques and tools
 
 ## Search API using Specification, Pageable and Sort
 
 Please check the repository: https://github.com/buikhacnam/filter-specification
+
+
+## Entity Manager Example
+Please check the repository: https://github.com/buikhacnam/entity-manager-example
 
 
 ## Calling external API using Resttemplate
