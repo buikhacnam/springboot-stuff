@@ -9,7 +9,7 @@ I think it's nice to have all of them in one place, so that I can easily share /
 
 ## <a href="#spring-security-and-LDAP-1">Spring Security And LDAP</a>
 
-## <a href="#pro-messenger-1">Websocket Pro messenger</a>
+## <a href="#pro-messenger">Websocket Pro messenger</a>
 
 ## <a href="#ultimate-calendar-1">Ultimate Calendar</a>
 
