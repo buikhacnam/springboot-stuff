@@ -5,6 +5,8 @@ I think it's nice to have all of them in one place, so that I can easily share /
 
 ## <a href="#spring-security-and-jwt-1">Spring Security And JWT</a>
 
+## <a href="#loggin-via-microsoft-azure-1">Loggin Via Micorsoft Azure</a>
+
 ## <a href="#spring-security-and-LDAP-1">Spring Security And LDAP</a>
 
 ## <a href="#pro-messenger-1">Websocket Pro messenger</a>
@@ -26,11 +28,19 @@ Please check this repository:
 
 https://github.com/buikhacnam/security-jwt-in-action
 
+
+# Loggin via Microsoft Azure
+
+Please check this repository:
+
+https://github.com/buikhacnam/azure-login
+
 # Spring Security and LDAP
 
 Please check this repository:
 
 https://github.com/buikhacnam/Spring-Security-LDAP
+
 
 
 # Pro Messenger
