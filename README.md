@@ -20,6 +20,8 @@ I think it's nice to have all of them in one place, so that I can easily share /
 
 ## <a href="#kafka-1">Kafka</a>
 
+## <a href="#redis-1">Redis</a>
+
 ## <a href="#firebase-push-notification-tester-1">Firebase Push Notification Tester</a>
 
 ## <a href="#common-techniques-and-tools">Some Other Tools</a>
@@ -233,6 +235,10 @@ Please check the repository: https://github.com/buikhacnam/relationship-exprerim
 # Kafka
 
 Please check the repository: https://github.com/buikhacnam/kafka-demo
+
+# Redis
+
+Please check the repository: https://github.com/buikhacnam/redis-the-demo
 
 # Firebase Push Notification Tester
 
