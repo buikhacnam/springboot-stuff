@@ -8,9 +8,13 @@ I think it's nice to have all of them in one place, so that I can easily share /
 
 ## <a href="#loggin-via-microsoft-azure">Loggin Via Micorsoft Azure</a>
 
-## <a href="#spring-security-and-LDAP-1">Spring Security And LDAP</a>
+## <a href="#spring-security-and-ldap-1">Spring Security And LDAP</a>
 
 ## <a href="#microservices-the-demo-1">Microservices the demo</a>
+
+## <a href="#dynamic-table-queries-by-rest-api-1">Dynamic table queries by REST API</a>
+
+## <a href="#localization-1">Localization</a>
 
 ## <a href="#pro-messenger">Websocket Pro messenger</a>
 
@@ -51,6 +55,18 @@ https://github.com/buikhacnam/Spring-Security-LDAP
 Please check this repository:
 
 https://github.com/buikhacnam/mi
+
+# Dynamic table queries by REST API
+
+Please check this repository:
+
+https://github.com/buikhacnam/dynamic-table-query
+
+# Localization
+
+Please check this repository:
+
+https://github.com/buikhacnam/Localization
 
 # Pro Messenger
 
